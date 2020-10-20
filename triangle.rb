@@ -11,10 +11,36 @@
 	суммой квадратов двух остальных сторон. Если все 3 стороны равны, то 
 	треугольник равнобедренный и равносторонний, но не прямоугольный.
 =end
+mass = []
 p "Введите стороны треугольника. AB="
-ab = gets.chomp.to_i
-p "BC= "
-bc = gets.chomp.to_i
-p "AC= "
-ac = gets.chomp.to_i
+mass.push gets.chomp.to_i	# 5
+p "BC="
+mass.push gets.chomp.to_i	#5
+p "AC="
+mass.push gets.chomp.to_i	#10
 
+gip = mass.max # гипотенуза
+mass.sort!		# сортируем
+p mass
+min = mass.min
+max = mass.max
+
+mass2 = mass.dup
+mass2.delete min
+mass2.delete max
+
+p "Гипотенуза = #{gip}"
+p "то что осталось #{mass2[0]}"
+p "____"
+p mass
+
+if (min == max)
+	p "Равносторонний треугольник"
+else
+		if gip**2 == (min **2 + mass2[0]**2)
+		p "Прямоугольный треугольник"
+		else
+
+		end
+end
+		
