@@ -20,23 +20,15 @@ p "AC="
 mass.push gets.chomp.to_f	#10
 
 gip = mass.max # гипотенуза
-mass.sort!		# сортируем
-min = mass.min
-max = gip
-min_index = mass.index mass.min
-max_index = mass.index mass.max
+cat1, cat2 = mass.min(2)
 
-mass2 = mass.dup
-mass2.delete_at min_index
-mass2.delete_at max_index
-
-if (min == max && min == mass2[0])
+if (gip == cat1 && gip == cat2)
 	p "Равносторонний треугольник1"
 else
-	if gip ** 2 == (min ** 2 + mass2[0] ** 2)
+	if gip ** 2 == (cat1 ** 2 + cat2 ** 2)
 			p "Прямоугольный треугольник"
 	else
-		if (min == mass2[0] || max == mass[0])
+		if (gip == cat1 || gip == cat2)
 			p "Равнобедренный треугольник"
 		else
 			p "Неверно введены данные"
