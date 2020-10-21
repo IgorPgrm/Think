@@ -21,26 +21,26 @@ mass.push gets.chomp.to_i	#10
 
 gip = mass.max # гипотенуза
 mass.sort!		# сортируем
-p mass
 min = mass.min
-max = mass.max
+max = gip
+min_index = mass.index mass.min
+max_index = mass.index mass.max
 
 mass2 = mass.dup
-mass2.delete min
-mass2.delete max
+mass2.delete_at min_index
+mass2.delete_at max_index
 
-p "Гипотенуза = #{gip}"
-p "то что осталось #{mass2[0]}"
-p "____"
-p mass
-
-if (min == max)
-	p "Равносторонний треугольник"
+if (min == max && min == mass2[0])
+	p "Равносторонний треугольник1"
 else
 		if gip**2 == (min **2 + mass2[0]**2)
-		p "Прямоугольный треугольник"
+			p "Прямоугольный треугольник"
 		else
-
+			if (min == mass2[0] || max == mass[0])
+				p "Равнобедренный треугольник"
+			else
+				p "Неверно введены данные"
+			end
 		end
 end
 		
