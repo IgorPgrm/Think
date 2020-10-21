@@ -15,16 +15,15 @@ elsif discr == 0
 	x =- b/(2 * a)
 	p "X1 == X2 = #{x}"
 else
+	sqr_discr = Math.sqrt(discr)
 	p "Дискриминант больше нуля!" 
-	x1 = (-b + Math.sqrt(discr)) / 2 * a
+	x1 = (-b + sqr_discr) / 2 * a
 	p "X1 = #{x1}"
-	x2 = (-b - Math.sqrt(discr)) / 2 * a
+	x2 = (-b - sqr_discr) / 2 * a
 	p "X2 = #{x2}"
 end
 
 =begin
 	>> 3 4 4
 	x = 2
-
-
 =end
