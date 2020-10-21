@@ -13,11 +13,11 @@
 =end
 mass = []
 p "Введите стороны треугольника. AB="
-mass.push gets.chomp.to_i	# 5
+mass.push gets.chomp.to_f	# 5
 p "BC="
-mass.push gets.chomp.to_i	#5
+mass.push gets.chomp.to_f	#5
 p "AC="
-mass.push gets.chomp.to_i	#10
+mass.push gets.chomp.to_f	#10
 
 gip = mass.max # гипотенуза
 mass.sort!		# сортируем
@@ -33,14 +33,14 @@ mass2.delete_at max_index
 if (min == max && min == mass2[0])
 	p "Равносторонний треугольник1"
 else
-		if gip**2 == (min **2 + mass2[0]**2)
+	if gip ** 2 == (min ** 2 + mass2[0] ** 2)
 			p "Прямоугольный треугольник"
+	else
+		if (min == mass2[0] || max == mass[0])
+			p "Равнобедренный треугольник"
 		else
-			if (min == mass2[0] || max == mass[0])
-				p "Равнобедренный треугольник"
-			else
-				p "Неверно введены данные"
-			end
+			p "Неверно введены данные"
 		end
+	end
 end
 		
