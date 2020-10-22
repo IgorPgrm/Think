@@ -22,10 +22,32 @@ def intercalary_year? year
   end
 end
 
-#puts "Введите год"
-#year = gets.chomp.to_i
-#intercalary_year(year)
+puts "Введите год"
+year = gets.chomp.to_i
+puts "Введите месяц"
+month = gets.chomp.to_i
+puts "Введите число"
+day = gets.chomp.to_i
 
-(2000..2100).each do |yr|
-  puts "#{yr}: Високосный" if intercalary_year? yr
+puts "#{year} #{month} #{day}"
+
+day_index = 0
+
+if month != 1
+  if intercalary_year?(year)
+    day_month[1] = 29 # февраль 29 дней
+  end
+  (0..month-2).each do |num|
+    day_index += day_month[num]
+  end
+  day_index += day
+else
+  day_index = day
 end
+
+puts "Всего в результате #{day_index} дней"
+
+
+
+
+
