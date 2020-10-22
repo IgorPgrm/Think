@@ -4,7 +4,6 @@
 
 glasn = %w[a e i o u y]
 hash = Hash.new
-alphabet = []
 alphabet = ('a'..'z').to_a
 
 alphabet.each_with_index do |a, index|
