@@ -6,23 +6,26 @@
 # это високосный год. Таким образом, 2000 г. является особым високосным годом,
 # который бывает лишь раз в 400 лет.
 
-def intercalary_year year
+day_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+def intercalary_year? year
   return 0 if year <= 0
   return true if year == 2000
   if year % 4 == 0
     if year % 100 != 0
       if year % 400 != 0
-        puts "#{year} - Високосный год"  # Високосный
+        return true
       end
     end
   else
-    puts "#{year} - обычный"
+    return false
   end
 end
+
 #puts "Введите год"
 #year = gets.chomp.to_i
-
-(2000..3000).each do |yr|
-  intercalary_year yr
-end
 #intercalary_year(year)
+
+(2000..2100).each do |yr|
+  puts "#{yr}: Високосный" if intercalary_year? yr
+end
