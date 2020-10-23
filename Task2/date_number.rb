@@ -10,12 +10,7 @@ day_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 def intercalary_year? year
   return 0 if year <= 0
-  return true if year == 2000
-  if year % 4 == 0 && year % 100 != 0 && year % 400 != 0
-    return true
-  else
-    return false
-  end
+  year % 4 == 0 && year % 100 != 0 || year % 400 == 0
 end
 
 puts "Введите год"
