@@ -6,9 +6,9 @@ glasn = %w[a e i o u y]
 hash = { }
 alphabet = ('a'..'z').to_a
 
-alphabet.each_with_index do |a, index|
+alphabet.each.with_index(1) do |a, index|
   if glasn.include?(a)
-    hash[a.to_sym] = index+1
+    hash[a.to_sym] = index
   end
 end
 
