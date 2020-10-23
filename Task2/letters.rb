@@ -3,7 +3,7 @@
 # «A», «E», «I», «O», «U», «Y».
 
 glasn = %w[a e i o u y]
-hash = Hash.new
+hash = { }
 alphabet = ('a'..'z').to_a
 
 alphabet.each_with_index do |a, index|
