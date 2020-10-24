@@ -1,7 +1,3 @@
-#Может перемещаться между станциями, указанными в маршруте. Перемещение возможно вперед и назад,
-# но только на 1 станцию за раз.
-#Возвращать предыдущую станцию, текущую, следующую, на основе маршрута
-
 class Train
 	attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station
 	attr_accessor :route
@@ -39,9 +35,45 @@ class Train
 		@carriages -= count if @speed.zero?
 	end
 
-	def add_route= route
+	def add_route route
 		@route = route
 		@current_station = route.first_station
+	end
+
+	def current_station
+		@current_station
+	end
+
+	def next_station
+		@route.stations[@route.stations.index(@current_station) + 1] unless is_last_station?
+	end
+
+	def prev_station
+		@route.stations[@route.stations.index(@current_station) - 1] unless is_first_station?
+	end
+
+	def is_last_station?
+		@current_station == @route.stations.last
+	end
+
+	def is_first_station?
+		@current_station == @route.stations.first
+	end
+
+	def move_forvard
+		unless is_last_station?
+			@current_station = next_station
+			next_station
+			@current_station #для возврата методом этой переменной
+		end
+	end
+
+	def move_back
+		unless is_first_station?
+			@current_station = prev_station
+			prev_station
+			@current_station #для возврата методом этой переменной
+		end
 	end
 
 end
