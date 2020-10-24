@@ -4,27 +4,26 @@ puts title
 tovars = {}
 total_cost = 0
 total_sum = 0
+counter = 0
 
-while true do
+loop do
   cmd = gets.chomp
-  if cmd.downcase == "q"
-    break
-  else
-    puts "Товар: #{cmd}"
-    puts "Введите стоимость товара:"
-    cost = gets.chomp.to_f
-    puts "Введите количество товара:"
-    count = gets.chomp.to_f
-    tovars[cmd.to_sym] = {cost => count}
-    puts "Товар добавлен! Добавить ещё один? Введите название или q чтобы посчитать сумму"
-  end
+  break if cmd.downcase == "q"
+  puts "Товар: #{cmd}"
+  puts "Введите стоимость товара:"
+  cost = gets.chomp.to_f
+  puts "Введите количество товара:"
+  count = gets.chomp.to_f
+  tovars["id_#{counter}".to_sym] = {title: cmd, price: cost, quantity: count }
+  counter += 1
+  puts "Товар добавлен! Добавить ещё один? Введите название или q чтобы посчитать сумму"
 end
 puts "Подсчёт товаров:"
-tovars.each do |title, cost_and_count|
-  cost_and_count.each do |cost, count|
-    total_cost = cost * count
-    puts "#{title} | #{cost} * #{count} = #{total_cost}"
+tovars.each do |id, cost_and_count|
+  cost_and_count.each do |id|
+    total_cost = cost_and_count[:price] * cost_and_count[:quantity]
   end
+  puts "#{cost_and_count[:title]} | #{cost_and_count[:quantity]} * #{cost_and_count[:price]} = #{total_cost}"
   total_sum += total_cost
 end
 puts "__________"
