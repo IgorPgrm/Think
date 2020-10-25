@@ -64,7 +64,7 @@ class Train
 		unless is_last_station?
 			@current_station = next_station
 			next_station
-			@current_station #для возврата методом этой переменной
+			@current_station #для возврата методом, этой переменной
 		end
 	end
 
@@ -72,7 +72,7 @@ class Train
 		unless is_first_station?
 			@current_station = prev_station
 			prev_station
-			@current_station #для возврата методом этой переменной
+			@current_station #для возврата методом, этой переменной
 		end
 	end
 
