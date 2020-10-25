@@ -1,31 +1,38 @@
-#Класс Station (Станция):
-#Имеет название, которое указывается при ее создании +
-#Может принимать поезда (по одному за раз)
-#Может возвращать список всех поездов на станции, находящиеся в текущий момент
 #Может возвращать список поездов на станции по типу (см. ниже): кол-во грузовых, пассажирских
 #Может отправлять поезда (по одному за раз, при этом, поезд удаляется из списка поездов, находящихся на станции).
 
 class Station
-  trains = {}
-  train_index = 0
 
   def initialize(title)
+    @title = title
 
+    @trains = {}
+    @train_index = 0
   end
 
   def add_train train #принимает объект поезд
-    trins["id#{train_index}"] = { train: train }
+    puts train.inspect
+    @trains["id#{@train_index}".to_sym] = { train: train }
+    @train_index += 1
   end
 
-  def train departure #отправление поезда
+  def train_departure #отправление поезда
 
   end
 
   def show_trains
-
+    @trains.each do |key, trains|
+      trains.each do |key, value|
+        puts "\t\t #{value.number}\t| #{value.type}\t| #{value.carriages}"
+      end
+    end
   end
 
-  def show_trains_by_type #отображение по типу
-
+  def show_trains_by_type type #отображение по типу
+    @trains.each do |key, trains|
+      trains.each do |key, value|
+        puts "\t\t #{value.number}\t| #{value.type}\t| #{value.carriages}" if value.type == type.to_sym
+      end
+    end
   end
 end
