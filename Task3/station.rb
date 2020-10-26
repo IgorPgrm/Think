@@ -3,7 +3,6 @@ class Station
   def initialize(title)
     @title = title
     @trains = []
-    @train_index = 0
   end
 
   def add_train train
