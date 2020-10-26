@@ -6,7 +6,6 @@ class Station
   end
 
   def add_train train
-    puts train.inspect
     @trains << train
   end
 
