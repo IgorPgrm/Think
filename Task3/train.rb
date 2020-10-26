@@ -7,8 +7,6 @@ class Train
     @type = type
     @carriages = carriages
     @speed = 0
-    @current_station = ""
-    @route = ""
   end
 
   def current_speed
