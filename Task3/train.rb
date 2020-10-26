@@ -32,10 +32,7 @@ class Train
   def add_route route
     @route = route
     @current_station = route.first_station
-  end
-
-  def current_station
-    @current_station
+    @current_station.add_train(self)
   end
 
   def next_station
@@ -56,17 +53,17 @@ class Train
 
   def move_forvard
     unless is_last_station?
+      @current_station.remove_train(self)
       @current_station = next_station
-      next_station
-      @current_station #для возврата методом, этой переменной
+      @current_station.add_train(self)
     end
   end
 
   def move_back
     unless is_first_station?
+      @current_station.remove_train(self)
       @current_station = prev_station
-      prev_station
-      @current_station #для возврата методом, этой переменной
+      @current_station.add_train(self)
     end
   end
 
