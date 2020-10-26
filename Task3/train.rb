@@ -26,7 +26,7 @@ class Train
   end
 
   def remove_carriage(count = 1)
-    @carriages -= count if @speed.zero?
+    @carriages -= count if @speed.zero? && @carriages > 0
   end
 
   def add_route route
