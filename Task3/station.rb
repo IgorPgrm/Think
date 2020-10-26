@@ -8,7 +8,6 @@ class Station
   def add_train train
     puts train.inspect
     @trains << train
-    @train_index += 1
   end
 
   def remove_train train
