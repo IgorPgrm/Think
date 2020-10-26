@@ -1,5 +1,5 @@
 class Train
-  attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station
+  attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
 
   def initialize number, type, carriages = 1
@@ -9,16 +9,12 @@ class Train
     @speed = 0
   end
 
-  def current_speed
-    @speed
-  end
-
   def speed_up
     @speed += 1
   end
 
   def speed_down
-    @speed.positive? ? @speed -= 1 : @speed = 0
+    @speed -= 1 if @speed.positive?
   end
 
   def stop
