@@ -2,11 +2,15 @@ class Train
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
 
-  def initialize number, type, carriages = 1
+  def initialize number, type
     @number = number
     @type = type
-    @carriages = carriages
     @speed = 0
+    @carriages = [] #чтобы не был nilclass
+  end
+
+  def show_info
+    puts "class #{self.class}"
   end
 
   def speed_up
@@ -21,8 +25,8 @@ class Train
     @speed = 0
   end
 
-  def add_carriage(count = 1)
-    @carriages += count if @speed.zero?
+  def add_carriage(carriage)
+    @carriages.push carriage if @speed.zero? && self.type == carriage.type
   end
 
   def remove_carriage(count = 1)

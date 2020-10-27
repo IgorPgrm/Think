@@ -1,11 +1,12 @@
 require_relative 'carriage'
 
-class PassengerCarriage < Carriage
+class PassangerCarriage < Carriage
+  attr_accessor :number_seats
+  attr_reader :residue_number
+
   def initialize
     super(:passanger)
-  end
-
-  def show_info
-    puts "class PassangerCarriage"
+    @residue_number = 54 #свободные места
+    @number_seats = 0 #занято мест
   end
 end
