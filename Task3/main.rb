@@ -33,12 +33,12 @@ def choise_two_station
   two_station = [nil, nil]
   loop do
     @main_station.each.with_index(1) { |station, index| puts "#{index} - #{station.title}" }
-    if two_station[0] == nil
+    if two_station[0].nil?
       puts "Выберите первую станцию в маршруте из списка и введите её номер:"
       input = gets.chomp.to_i
       two_station[0] = @main_station[input-1]
     else
-      if two_station[1] == nil
+      if two_station[1].nil?
         puts "Выберите вторую станцию в маршруте из списка и введите её номер:"
         input = gets.chomp.to_i
         two_station[1] = @main_station[input-1]
@@ -58,6 +58,7 @@ def create_new_route
     clear
     create_new_station
   else
+    clear
     two_station = choise_two_station
     @main_routes << Route.new(two_station.first, two_station.last)
 
@@ -76,20 +77,24 @@ EOF
   puts "Создана станция: #{station.title}"
   16.times{ print '='}
   puts <<~EOF
-    \n1. Просмотр станций
-    2. Перейти к созданию маршрута
-    3. Удаление станции
+    \n1. Создать станцию
+    2. Просмотр станций
+    3. Перейти к созданию маршрута
+    4. Удаление станции
     0. Выход в главное меню
 EOF
   input = gets.chomp.to_i
   case input
   when 1
     clear
-    show_station
+    create_new_station
   when 2
     clear
-    create_new_route
+    show_station
   when 3
+    clear
+    create_new_route
+  when 4
     clear
     delete_station
   when 0
@@ -159,6 +164,23 @@ loop do
 
 
   @cmd = gets.chomp.to_i
+
+  def menu_train
+    # code here
+  end
+
+  def menu_carriage
+    # code here
+  end
+
+  def menu_route
+    # code here
+  end
+
+  def menu_show
+    # code here
+  end
+
   case @cmd
   when 0
     break
@@ -175,7 +197,7 @@ loop do
     clear
     menu_carriage
   when 5
-    munu_show
+    menu_show
   end
   #system('clear')
   end
