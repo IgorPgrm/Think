@@ -151,6 +151,22 @@ ST
   end
 end
 
+def menu_train
+  # code here
+end
+
+def menu_carriage
+  # code here
+end
+
+def menu_route
+  # code here
+end
+
+def menu_show
+  # code here
+end
+
 def main_menu
 loop do
   puts "Выберете пункт меню: "
@@ -164,22 +180,6 @@ loop do
 
 
   @cmd = gets.chomp.to_i
-
-  def menu_train
-    # code here
-  end
-
-  def menu_carriage
-    # code here
-  end
-
-  def menu_route
-    # code here
-  end
-
-  def menu_show
-    # code here
-  end
 
   case @cmd
   when 0
@@ -197,6 +197,7 @@ loop do
     clear
     menu_carriage
   when 5
+    clear
     menu_show
   end
   #system('clear')
