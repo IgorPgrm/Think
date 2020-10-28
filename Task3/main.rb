@@ -6,16 +6,10 @@ require_relative 'route'
 require_relative 'station'
 
 =begin
-    К пассажирскому поезду можно прицепить только пассажирские, к грузовому - грузовые.
-    При добавлении вагона к поезду, объект вагона должен передаваться как аргумент метода
-и сохраняться во внутреннем массиве поезда, в отличие от предыдущего задания, где мы считали
-только кол-во вагонов. Параметр конструктора "кол-во вагонов" при этом можно удалить.
 Добавить текстовый интерфейс:
 
 Создать программу в файле main.rb, которая будет позволять пользователю через текстовый интерфейс делать следующее:
-     - Создавать станции
      - Создавать поезда
-     - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
      - Назначать маршрут поезду
      - Добавлять вагоны к поезду
      - Отцеплять вагоны от поезда
@@ -115,11 +109,9 @@ end
 def add_station_to_route
   puts "Добавление станции в маршрут"
   puts "Выберите маршрут"
-  unless @main_routes.any?  #если нет маршрутов
-    puts "Нет маршрутов"
+  unless show_routes
     create_new_route
   else
-    show_routes
     input = gets.chomp.to_i
     route = @main_routes[input-1]
     clear
@@ -197,8 +189,38 @@ ST
   end
 end
 
+def show_trains
+  unless @main_trains.any?
+    puts "Нет поездов для отображения\n\n"
+    main_menu
+    false
+  else
+    input = gets.chomp.to_i #Выбор поезда
+  end
+end
+
 def menu_train
-  # code here
+  clear
+  puts <<~TRM
+  Поезд
+  1. Просмотр поездов
+  2. Создать поезд
+  3. Удалить поезд
+  4. Прицепить вагон к поезду
+  5. Отцепить вагон от поезда
+  6. Добавить маршрут поезду
+  7. Удалить маршрут у поезда
+  0. Выход в меню
+  TRM
+
+  input = gets.chomp.to_i
+  case input
+  when 0
+    clear main_menu
+  when 1
+    clear
+    show_trains
+  end
 end
 
 def menu_carriage
@@ -262,41 +284,40 @@ def menu_show
 end
 
 def main_menu
-loop do
-  puts "Выберите пункт меню: "
-  puts <<~MME
-    1. Станции \t[просмотр] | [создать] [добавить] [удалить]
-    2. Поезд \t[просмотр] | [создать] [добавить] [удалить] | [Переместить вперёд] [Переместить назад]
-    3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
-    4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
-    5. Просмотр
-  MME
+  loop do
+    puts "Выберите пункт меню: "
+    puts <<~MME
+      1. Станции \t[просмотр] | [создать] [добавить] [удалить]
+      2. Поезд \t[просмотр] | [создать] [добавить] [удалить] | [Переместить вперёд] [Переместить назад]
+      3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
+      4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
+      5. Просмотр
+    MME
 
+    @cmd = gets.chomp.to_i
 
-  @cmd = gets.chomp.to_i
-
-  case @cmd
-  when 0
-    clear
-    exit
-  when 1
-    clear
-    menu_station
-  when 2
-    clear
-    menu_train
-  when 3
-    clear
-    menu_route
-  when 4
-    clear
-    menu_carriage
-  when 5
-    clear
-    menu_show
+    case @cmd
+    when 0
+      clear
+      exit
+    when 1
+      clear
+      menu_station
+    when 2
+      clear
+      menu_train
+    when 3
+      clear
+      menu_route
+    when 4
+      clear
+      menu_carriage
+    when 5
+      clear
+      menu_show
+    end
+    break
   end
-  break
-end
 end
 
 main_menu
