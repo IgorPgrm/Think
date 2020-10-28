@@ -195,6 +195,11 @@ def show_trains
     main_menu
     false
   else
+    @main_trains.each do |train|
+      type = "Пассажирский" if train.type == :passenger
+      type = "Грузовой" if train.type == :cargo
+      puts "\tПоезд: #{train.number} \t #{type}"
+    end
     input = gets.chomp.to_i #Выбор поезда
   end
 end
