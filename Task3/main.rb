@@ -225,6 +225,19 @@ def create_new_train
   menu_train
 end
 
+def delete_train
+  unless show_trains
+    puts "Поездов нет, удалять нечего"
+  else
+    puts "Выберите поезд для удаления"
+    input = gets.chomp.to_i
+    puts "Выбран: #{input}"
+    puts "Поезд #{@main_trains[input-1].number} - удалён"
+    @main_trains.delete_at(input-1)
+  end
+  menu_train
+end
+
 def menu_train
   puts <<~TRM
   Поезд
@@ -250,6 +263,9 @@ def menu_train
   when 2
     clear
     create_new_train
+  when 3
+    clear
+    delete_train
   end
 end
 
@@ -322,6 +338,8 @@ def main_menu
       3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
       4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
       5. Просмотр
+
+      0. Выход из программы
     MME
 
     @cmd = gets.chomp.to_i
