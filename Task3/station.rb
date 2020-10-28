@@ -14,11 +14,11 @@ class Station
     @trains.delete(train)
   end
 
-  def show_trains
+  def show_trains_on_station
     @trains.each { |train| puts "\t\t #{train.number}\t| #{train.type}\t| #{train.carriages}" }
   end
 
-  def show_trains_by_type type #отображение по типу
+  def show_trains_on_station_by_type type #отображение по типу
     @trains.each { |train| puts "\t\t #{train.number}\t| #{train.type}\t| #{train.carriages}"  if train.type == type}
   end
 end
