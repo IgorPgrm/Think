@@ -108,6 +108,7 @@ def show_routes
     end
   else
     puts "Нет маршрутов для отображения"
+    false #необходимо для проверки
   end
 end
 
@@ -136,9 +137,12 @@ end
 
 def delete_station_from_route
   puts "Выберите маршрут и введите его номер"
-  show_routes
-  input = gets.chomp.to_i
-  route = @main_routes[input-1]
+  unless show_routes
+    create_new_route
+  else
+    input = gets.chomp.to_i
+    route = @main_routes[input-1]
+  end
   if route.stations.count == 2
     puts "Невозможно удалить станции из маршрута. В маршруте только 2 станции\n"
     menu_route
@@ -203,8 +207,11 @@ end
 
 def delete_route
   puts "Выберите маршрут для удаления"
-  show_routes
+  unless show_routes
+    create_new_route
+  else
   input = gets.chomp.to_i
+  end
   puts "Выбран маршрут для удаления: #{@main_routes[input-1].stations.first.title} -
         #{@main_routes[input-1].stations.last.title}"
   @main_routes.delete_at(input-1)
