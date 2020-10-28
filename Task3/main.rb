@@ -36,20 +36,17 @@ def choise_two_station
     if two_station[0].nil?
       puts "Выберите начальную станцию в маршруте из списка и введите её номер или 0 для выхода:"
       input = gets.chomp.to_i
-      main_menu if input == 0
       two_station[0] = @main_station[input-1]
-
+      @main_station.delete_at(input-1)
       clear
     else
       if two_station[1].nil?
         puts "Выберите конечную станцию в маршруте из списка и введите её номер или 0 для выхода:"
         input = gets.chomp.to_i
-        main_menu if input == 0
         two_station[1] = @main_station[input-1]
+        @main_station.delete_at(input-1)
         clear
       else
-        @main_station.delete(two_station[0])
-        @main_station.delete(two_station[1])
         break
       end
     end
@@ -69,8 +66,8 @@ def create_new_route
     two_station = choise_two_station
     @main_routes << Route.new(two_station.first, two_station.last)
     puts "Был создан маршрут:"
-    print "#{@main_routes.last.first_station.title} -> "
-    print "#{@main_routes.last.last_station.title}"
+    print "#{@main_routes.last.stations.first.title} -> "
+    print "#{@main_routes.last.stations.last.title} \n"
     sleep(2)
     menu_route
   end
@@ -86,43 +83,16 @@ EOF
   @main_station << station
   clear
   puts "Создана станция: #{station.title}"
-  puts <<~EOF
-    \n1. Создать станцию
-    2. Просмотр станций
-    3. Добавление станции в маршрут
-    4. Удалить станцию
-    5. Создать маршрута
-    0. Выход в главное меню
-EOF
-  input = gets.chomp.to_i
-  case input
-  when 1
-    clear
-    create_new_station
-  when 2
-    clear
-    show_station
-  when 3
-    clear
-    add_station_to_route
-  when 4
-    clear
-    delete_station
-  when 5
-    clear
-    create_new_route
-  when 0
-    clear
-    main_menu
-  end
+  sleep(0.5)
+  menu_station
 end
 
 def show_station
   if @main_station.any?
     @main_station.each.with_index(1) { |station, index| puts "#{index} Станция #{station.title}" }
   else
-    puts "\tСтанций без маршрутов нет"
-    menu_station
+    puts "\tСтанций нет"
+    #menu_station
   end
 end
 
@@ -131,32 +101,59 @@ def clear
 end
 
 def show_routes
-  @main_routes.each.with_index(1) do |route, index|
-    print "#{index}.\t"
-    puts "#{route.show_route}"
+  if @main_routes.any?
+    @main_routes.each.with_index(1) do |route, index|
+      print "#{index}.\t"
+      puts "#{route.show_route}"
+    end
+  else
+    puts "Нет маршрутов для отображения"
   end
 end
 
 def add_station_to_route
-  unless @main_routes.any?
+  puts "Добавление станции в маршрут"
+  puts "Выберите маршрут"
+  unless @main_routes.any?  #если нет маршрутов
+    puts "Нет маршрутов"
     create_new_route
   else
-  puts "Добавление станции в маршрут"
-  puts "Выберете маршрут"
-  show_routes
+    show_routes
+    input = gets.chomp.to_i
+    route = @main_routes[input-1]
+    clear
+    puts "Выберите станцию для добавления в маршрут"
+    show_station
+    input = gets.chomp.to_i
+    route.add_station @main_station[input-1]
+    @main_station.delete_at(input-1)
+    clear
+    "Станция добавлена в маршрут"
+    route.show_route
+    menu_station
   end
+end
+
+def delete_station_from_route
+  puts "Выберите маршрут и введите его номер"
+  show_routes
   input = gets.chomp.to_i
   route = @main_routes[input-1]
-  clear
-  puts "Выберете станцию для добавления в маршрут"
-  show_station
-  input = gets.chomp.to_i
-  route.add_station @main_station[input-1]
-  @main_station.delete_at(input-1)
-  clear
-  "Станция добавлена в маршрут"
-  route.show_route
-  menu_station
+  if route.stations.count == 2
+    puts "Невозможно удалить станции из маршрута. В маршруте только 2 станции\n"
+    menu_route
+  else
+    puts "Обратите внимание что нельзя удалять начальную и конечные станции маршрута"
+    puts "Выберите станцию для удаления:"
+    route.show_route
+    input = gets.chomp.to_i
+    station = route.stations[input-1]
+    print "Выбранная станция: #{station.title}"
+    route.del_station station
+    puts " удалена"
+    sleep(2)
+    main_menu
+  end
 end
 
 def menu_station
@@ -165,7 +162,7 @@ def menu_station
     1. Просмотр станций
     2. Создать станцию
     3. Добавить к маршруту
-    4. Удалить
+    4. Удалить станцию из маршрута
 
     0. Главное меню
 ST
@@ -176,8 +173,13 @@ ST
     main_menu
   when 1
     clear
-    puts "Просмотр станций:\n"
+    puts "Станции не прикреплённые к маршрутам:\n"
     show_station
+    if  @main_routes.any?
+    puts "\nСтанции в маршрутах"
+    show_routes
+    end
+    puts "\n"
     menu_station
   when 2
     clear
@@ -187,7 +189,7 @@ ST
     add_station_to_route
   when 4
     clear
-    delete_station
+    delete_station_from_route
   end
 end
 
@@ -199,14 +201,27 @@ def menu_carriage
   # code here
 end
 
+def delete_route
+  puts "Выберите маршрут для удаления"
+  show_routes
+  input = gets.chomp.to_i
+  puts "Выбран маршрут для удаления: #{@main_routes[input-1].stations.first.title} -
+        #{@main_routes[input-1].stations.last.title}"
+  @main_routes.delete_at(input-1)
+  puts "Маршрут удалён"
+  show_routes
+  puts "\n"
+  menu_route
+end
+
 def menu_route
-  clear
   puts <<~RO
     Маршруты
     1. Просмотр маршрутов
     2. Создать маршрут
     3. Удалить маршрут
     4. Добавить станцию в маршрут
+    5. Удалить станцию из маршрута
     0. Выход
   RO
   input = gets.chomp.to_i
@@ -218,8 +233,7 @@ def menu_route
     clear
     puts "Просмотр маршрутов"
     show_routes
-    "Любая клавиша чтобы продолжить"
-    gets.chomp.to_i
+    puts "\n"
     menu_route
   when 2
     clear
@@ -230,6 +244,9 @@ def menu_route
   when 4
     clear
     clear add_station_to_route
+  when 5
+    clear
+    delete_station_from_route
   end
 end
 
@@ -239,7 +256,7 @@ end
 
 def main_menu
 loop do
-  puts "Выберете пункт меню: "
+  puts "Выберите пункт меню: "
   puts <<~MME
     1. Станции \t[просмотр] | [создать] [добавить] [удалить]
     2. Поезд \t[просмотр] | [создать] [добавить] [удалить] | [Переместить вперёд] [Переместить назад]
@@ -253,7 +270,8 @@ loop do
 
   case @cmd
   when 0
-    break
+    clear
+    exit
   when 1
     clear
     menu_station
@@ -270,9 +288,8 @@ loop do
     clear
     menu_show
   end
-  #system('clear')
-  end
+  break
+end
 end
 
-clear
 main_menu
