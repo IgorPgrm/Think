@@ -192,7 +192,6 @@ end
 def show_trains
   unless @main_trains.any?
     puts "Нет поездов для отображения\n\n"
-    main_menu
     false
   else
     puts "Список поездов:"
@@ -269,8 +268,57 @@ def menu_train
   end
 end
 
+def show_carriages
+  unless @main_carriages.any?
+    puts "Нет вагонов для отображения"
+  else
+    puts "Список вагонов:"
+    @main_carriages.each.with_index(1) do |carriage, index|
+      type = "Пассажирский" if carriage.type == :passenger
+      type = "Грузовой" if carriage.type == :cargo
+      puts "\t#{index}.\t#{type}\t\tВагон: #{carriage}"
+    end
+  end
+end
+
+def create_new_carriage
+  puts "Создание нового вагона \n\n"
+  puts "Введите тип вагона. \n1. Пассажирский \n2. Грузовой\n"
+  input = gets.chomp.to_i
+  case input
+  when 1
+    @main_carriages << PassangerCarriage.new
+  when 2
+    @main_carriages << CargoCarriage.new
+  end
+  puts "\nВагон создан\n"
+  show_carriages
+  puts "\n"
+  menu_carriage
+end
+
 def menu_carriage
-  # code here
+  puts <<~CAR
+    Вагоны
+    1. Просмотр вагонов
+    2. Создать вагон
+    3. Удалить вагон
+    4. Добавить вагон к поезду
+    5. Удалить вагон из поезда
+    0. Выход
+  CAR
+
+  input = gets.chomp.to_i
+  case input
+  when 1
+    clear
+    show_carriages
+    puts "\n"
+    menu_carriage
+  when 2
+    clear
+    create_new_carriage
+  end
 end
 
 def delete_route
