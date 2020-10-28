@@ -1,5 +1,5 @@
 class Route
-  attr_reader :first_station, :last_station, :stations
+  attr_reader :stations
 
   def initialize (first_station, last_station)
     @first_station, @last_station = first_station, last_station
@@ -22,8 +22,10 @@ class Route
   end
 
   def del_station station
-    if present_station_in_route? station && @stations.first != station && @stations.last != station
+    if present_station_in_route?(station) && @stations.first != station && @stations.last != station
       @stations.delete(station)
+    else
+      puts "Невозможно удалить выбранную станцию: #{station.title}"
     end
   end
 
