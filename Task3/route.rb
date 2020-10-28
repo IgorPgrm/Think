@@ -7,7 +7,14 @@ class Route
   end
 
   def show_route
-    @stations.each.with_index(1) { | station, index | puts "#{index}) - #{station}"}
+    @stations.each.with_index(1) do | station, index |
+      unless @stations.last == station
+        print "#{index}) #{station.title} -> "
+      else
+        puts "#{index}) #{station.title}"
+      end
+    end
+    return "\n"
   end
 
   def add_station station
@@ -15,7 +22,7 @@ class Route
   end
 
   def del_station station
-    if present_station_in_route? station && @stations.first != station && @station.last != station
+    if present_station_in_route? station && @stations.first != station && @stations.last != station
       @stations.delete(station)
     end
   end
