@@ -195,12 +195,12 @@ def show_trains
     main_menu
     false
   else
-    @main_trains.each do |train|
+    puts "Список поездов:"
+    @main_trains.each.with_index(1) do |train, index|
       type = "Пассажирский" if train.type == :passenger
       type = "Грузовой" if train.type == :cargo
-      puts "\tПоезд: #{train.number} \t #{type}"
+      puts "\t#{index}.\t#{type}\t\tПоезд: #{train.number}"
     end
-    input = gets.chomp.to_i #Выбор поезда
   end
 end
 
@@ -219,12 +219,13 @@ def create_new_train
     type = :cargo
   end
   @main_trains << Train.new(number, type)
-  puts "Поезд добавлен"
+  puts "\nПоезд добавлен\n"
   show_trains
+  puts "\n"
+  menu_train
 end
 
 def menu_train
-  clear
   puts <<~TRM
   Поезд
   1. Просмотр поездов
@@ -244,6 +245,8 @@ def menu_train
   when 1
     clear
     show_trains
+    puts "\n\n"
+    menu_train
   when 2
     clear
     create_new_train
