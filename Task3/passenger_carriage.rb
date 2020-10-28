@@ -5,7 +5,7 @@ class PassangerCarriage < Carriage
   attr_reader :residue_number
 
   def initialize
-    super(:passanger)
+    super(:passenger)
     @residue_number = 54 #свободные места
     @number_seats = 0 #занято мест
   end
