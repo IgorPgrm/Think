@@ -297,6 +297,19 @@ def create_new_carriage
   menu_carriage
 end
 
+def delete_carriage
+  unless show_carriages
+    puts "Поездов нет, удалять нечего"
+  else
+    puts "Выберите вагон для удаления"
+    input = gets.chomp.to_i
+    puts "Выбран: #{input}"
+    puts "Вагон #{@main_carriages[input-1]} - удалён"
+    @main_carriages.delete_at(input-1)
+  end
+  menu_carriage
+end
+
 def menu_carriage
   puts <<~CAR
     Вагоны
@@ -305,11 +318,14 @@ def menu_carriage
     3. Удалить вагон
     4. Добавить вагон к поезду
     5. Удалить вагон из поезда
-    0. Выход
+    0. Главное меню
   CAR
 
   input = gets.chomp.to_i
   case input
+  when 0
+    clear
+    main_menu
   when 1
     clear
     show_carriages
@@ -318,6 +334,9 @@ def menu_carriage
   when 2
     clear
     create_new_carriage
+  when 3
+    clear
+    delete_carriage
   end
 end
 
