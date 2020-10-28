@@ -199,6 +199,25 @@ def show_trains
   end
 end
 
+def create_new_train
+  puts "Создание нового поезда \n\n"
+  puts "Введите номер поезда:"
+  number = gets.chomp.to_s
+  clear
+  puts "Поезд \"#{number}\"\n\n"
+  puts "Введите тип поезда. \n1. Пассажирский \n2. Грузовой\n"
+  input = gets.chomp.to_i
+  case input
+  when 1
+    type = :passenger
+  when 2
+    type = :cargo
+  end
+  @main_trains << Train.new(number, type)
+  puts "Поезд добавлен"
+  show_trains
+end
+
 def menu_train
   clear
   puts <<~TRM
@@ -220,6 +239,9 @@ def menu_train
   when 1
     clear
     show_trains
+  when 2
+    clear
+    create_new_train
   end
 end
 
