@@ -334,6 +334,7 @@ def add_carriage_to_train
       if carriage.type == train.type
         train.add_carriage carriage
         puts "Вагон добавлен к поезду #{train.number}"
+        @main_carriages.delete(carriage)
         show_trains
         menu_carriage
       else
@@ -341,6 +342,26 @@ def add_carriage_to_train
         main_menu
       end
     end
+  end
+end
+
+def remove_carriage_from_train
+  puts "Выберите поезд"
+  show_trains
+  input = gets.chomp.to_i
+  train = @main_trains[input-1]
+  if train.carriages.count > 0
+    train.carriages.each.with_index(1) do |car, index|
+      puts "#{index}. #{car}"
+    end
+    puts "Выберите вагон для удаления:"
+    input = gets.chomp.to_i
+    train.carriages.delete_at(input-1)
+    clear
+    puts "Вагон удалён"
+    menu_carriage
+  else
+    puts "У выбранного поезда #{train.carriages.count} вагонов!"
   end
 end
 
@@ -375,6 +396,9 @@ def menu_carriage
     clear
     puts "Добавление вагона к поезду"
     add_carriage_to_train
+  when 5
+    clear
+    remove_carriage_from_train
   end
 end
 
