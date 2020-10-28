@@ -198,7 +198,7 @@ def show_trains
     @main_trains.each.with_index(1) do |train, index|
       type = "Пассажирский" if train.type == :passenger
       type = "Грузовой" if train.type == :cargo
-      puts "\t#{index}.\t#{type}\t\tПоезд: #{train.number}"
+      puts "\t#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number}"
     end
   end
 end
@@ -217,6 +217,7 @@ def create_new_train
   when 2
     type = :cargo
   end
+  clear
   @main_trains << Train.new(number, type)
   puts "\nПоезд добавлен\n"
   show_trains
@@ -265,6 +266,9 @@ def menu_train
   when 3
     clear
     delete_train
+  when 4
+    clear
+    add_carriage_to_train
   end
 end
 
@@ -299,7 +303,7 @@ end
 
 def delete_carriage
   unless show_carriages
-    puts "Поездов нет, удалять нечего"
+    puts "Вагонов нет, удалять нечего"
   else
     puts "Выберите вагон для удаления"
     input = gets.chomp.to_i
@@ -308,6 +312,36 @@ def delete_carriage
     @main_carriages.delete_at(input-1)
   end
   menu_carriage
+end
+
+def add_carriage_to_train
+  puts "Выберите поезд из списка"
+  unless show_trains
+    puts "Для добавления вагонов к поезду, нужно создать поезд"
+    menu_train
+  else
+    input = gets.chomp.to_i
+    train = @main_trains[input-1]
+    puts "Выбран #{train.number}, кол-во вагонов: #{train.carriages.count}"
+    puts "Выберите вагон из списка:"
+    unless show_carriages
+      puts "Нет вагонов для добавления"
+      menu_carriage
+    else
+      input = gets.chomp.to_i
+      carriage = @main_carriages[input-1]
+      clear
+      if carriage.type == train.type
+        train.add_carriage carriage
+        puts "Вагон добавлен к поезду #{train.number}"
+        show_trains
+        menu_carriage
+      else
+        puts "Ошибка добавления! Тип вагона не совпадает с типом поезда!"
+        main_menu
+      end
+    end
+  end
 end
 
 def menu_carriage
@@ -337,6 +371,10 @@ def menu_carriage
   when 3
     clear
     delete_carriage
+  when 4
+    clear
+    puts "Добавление вагона к поезду"
+    add_carriage_to_train
   end
 end
 
