@@ -235,7 +235,7 @@ class Main
     when 0
       main_menu
     when 1
-      show_station
+      choise_station if show_station
       puts "\n"
       menu_station
     when 2
@@ -417,11 +417,10 @@ class Main
     when 8
       move_train 2
     when 9
-      clear
       choise_train if show_trains
       clear
       show_current_info
-      main_menu
+      menu_train
     end
   end
 
@@ -528,6 +527,7 @@ class Main
       3. Удалить вагон
       4. Добавить вагон к поезду
       5. Удалить вагон из поезда
+      6. Выбрать вагон
       0. Главное меню
     CAR
 
@@ -551,6 +551,9 @@ class Main
       add_carriage_to_train
     when 5
       remove_carriage_from_train
+    when 6
+      choise_carriage if show_carriages
+      menu_carriage
     end
   end
 
@@ -578,6 +581,7 @@ class Main
       3. Удалить маршрут
       4. Добавить станцию в маршрут
       5. Удалить станцию из маршрута
+      6. Выбрать маршрут
       0. Выход
     RO
     input = gets.chomp.to_i
@@ -599,6 +603,9 @@ class Main
       add_station_to_route
     when 5
       delete_station_from_route
+    when 6
+      choise_route if show_routes
+      menu_route
     end
   end
 
