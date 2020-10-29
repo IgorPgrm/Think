@@ -41,7 +41,6 @@ class Train
 
   def remove_route
     @route = nil
-    @current_station = nil
     @current_station.remove_train(self)
   end
 
