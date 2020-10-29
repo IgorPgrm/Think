@@ -29,8 +29,8 @@ class Train
     @carriages.push carriage if @speed.zero? && self.type == carriage.type
   end
 
-  def remove_carriage(count = 1)
-    @carriages -= count if @speed.zero? && @carriages > 0
+  def remove_carriage(carriage)
+    @carriages.delete carriage if @speed.zero?
   end
 
   def add_route route
