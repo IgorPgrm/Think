@@ -6,14 +6,6 @@ require_relative 'route'
 require_relative 'station'
 
 =begin
-Добавить текстовый интерфейс:
-
-Создать программу в файле main.rb, которая будет позволять пользователю через текстовый интерфейс делать следующее:
-     - Создавать поезда
-     - Назначать маршрут поезду
-     - Добавлять вагоны к поезду
-     - Отцеплять вагоны от поезда
-     - Перемещать поезд по маршруту вперед и назад
      - Просматривать список станций и список поездов на станции
 =end
 
@@ -83,10 +75,19 @@ end
 
 def show_station
   if @main_station.any?
-    @main_station.each.with_index(1) { |station, index| puts "#{index} Станция #{station.title}" }
+    @main_station.each.with_index(1) do |station, index|
+      print "#{index} Станция #{station.title}"
+      if station.trains.count > 0
+        print " На станции поезда: "
+        station.trains.each do |train|
+          print "#{train.number}; "
+        end
+        print "\n"
+      end
+    end
   else
     puts "\tСтанций нет"
-    #menu_station
+    false
   end
 end
 
@@ -116,14 +117,18 @@ def add_station_to_route
     route = @main_routes[input-1]
     clear
     puts "Выберите станцию для добавления в маршрут"
-    show_station
-    input = gets.chomp.to_i
-    route.add_station @main_station[input-1]
-    #@main_station.delete_at(input-1) #не удалять станцию
-    clear
-    "Станция добавлена в маршрут"
-    route.show_route
-    menu_station
+    unless show_station
+      puts "нет станций"
+      main_menu
+    else
+      input = gets.chomp.to_i
+      route.add_station @main_station[input-1]
+      #@main_station.delete_at(input-1) #не удалять станцию
+      clear
+      "Станция добавлена в маршрут"
+      route.show_route
+      menu_station
+    end
   end
 end
 
@@ -157,8 +162,9 @@ def menu_station
     Станции
     1. Просмотр станций
     2. Создать станцию
-    3. Добавить к маршруту
-    4. Удалить станцию из маршрута
+    3. Добавить к существующему маршруту
+    4. Удалить станцию из существующего маршрута
+    5. Создать новый маршрут
 
     0. Главное меню
 ST
@@ -172,7 +178,7 @@ ST
     puts "Станции не прикреплённые к маршрутам:\n"
     show_station
     if  @main_routes.any?
-    puts "\nСтанции в маршрутах"
+    puts "\n\nСтанции в маршрутах"
     show_routes
     end
     puts "\n"
@@ -186,6 +192,9 @@ ST
   when 4
     clear
     delete_station_from_route
+  when 5
+    clear
+    create_new_route
   end
 end
 
@@ -198,7 +207,9 @@ def show_trains
     @main_trains.each.with_index(1) do |train, index|
       type = "Пассажирский" if train.type == :passenger
       type = "Грузовой" if train.type == :cargo
-      puts "\t#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number}"
+      print "#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number} "
+      puts "На станции:#{train.current_station.title}" unless train.current_station.nil?
+      puts
     end
   end
 end
@@ -264,8 +275,43 @@ def add_route_to_train
 end
 
 def remove_route_from_train
-  puts "Заглушка для метода"
-  menu_route
+  unless show_trains
+    puts "Нужно создать поезд"
+    menu_train
+  else
+    puts "Выберите поезд"
+    input = gets.chomp.to_i
+    train = @main_trains[input-1]
+    train.remove_route
+    puts "Маршрут у поезда #{train.number} удалён"
+    main_menu
+  end
+end
+
+def move_train_forward
+  puts "Выберите поезд"
+  unless show_trains
+    puts "Нет поездов для передвижения"
+  else
+    input = gets.chomp.to_i
+    train = @main_trains[input-1]
+    train.move_forvard
+    puts "Поезд прибыл на следующую станцию #{train.current_station.title}"
+    menu_train
+  end
+end
+
+def move_train_back
+  puts "Выберите поезд"
+  unless show_trains
+    puts "Нет поездов для передвижения"
+  else
+    input = gets.chomp.to_i
+    train = @main_trains[input-1]
+    train.move_back
+    puts "Поезд прибыл на предыдущую станцию #{train.current_station.title}"
+    menu_train
+  end
 end
 
 def menu_train
@@ -278,6 +324,8 @@ def menu_train
   5. Отцепить вагон от поезда
   6. Добавить маршрут поезду
   7. Удалить маршрут у поезда
+  8. Переместить на станцию вперёд
+  9. Переместить на станцию назад
   0. Выход в меню
   TRM
 
@@ -308,6 +356,12 @@ def menu_train
   when 7
     clear
     remove_route_from_train
+  when 8
+    clear
+    move_train_forward
+  when 9
+    clear
+    move_train_back
   end
 end
 
@@ -502,7 +556,7 @@ def main_menu
     puts "Выберите пункт меню: "
     puts <<~MME
       1. Станции \t[просмотр] | [создать] [добавить] [удалить]
-      2. Поезд \t[просмотр] | [создать] [добавить] [удалить] | [Переместить вперёд] [Переместить назад]
+      2. Поезд \t[просмотр] | [создать] [удалить] | [Переместить вперёд] [Переместить назад]
       3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
       4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
       5. Просмотр
