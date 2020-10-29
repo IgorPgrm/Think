@@ -39,6 +39,12 @@ class Train
     @current_station.add_train(self)
   end
 
+  def remove_route
+    @route = nil
+    @current_station = nil
+    @current_station.remove_train(self)
+  end
+
   def next_station
     @route.stations[@route.stations.index(@current_station) + 1] unless is_last_station?
   end
