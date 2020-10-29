@@ -31,32 +31,32 @@ class Main
 
   def show_current_info
     print "Выбраны: поезд:["
-    print @current_train == @na ? "#{@na}" : "#{@current_train.number}"
+    print @current_train == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_train.number}\u001B[0m"
     print"] станция:["
-    print @current_station == @na ? "#{@na}" : "#{@current_station.title}"
+    print @current_station == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_station.title}\u001B[0m"
     print "] маршрут:["
-    print @current_route == @na ? "#{@na}" : "#{@current_route.stations.first.title} - #{@current_route.stations.last.title}"
+    print @current_route == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_route.title}\u001B[0m"
     print "] вагон:["
-    print @current_carriage == @na ? "#{@na}" : "#{@current_carriage.type}"
-    print "] \n"
+    print @current_carriage == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_carriage.type}\u001B[0m"
+    print "]\n"
   end
 
   def choise_station
-    puts "Выберите станцию:"
+    puts "\nВыберите станцию:"
     input = gets.chomp.to_i
     @current_station = @main_station[input-1]
-    puts "Выбрана станция: #{@current_station}"
+    puts "Выбрана станция: #{@current_station.title}"
   end
 
   def choise_route
-    puts "Выберите маршрут:"
+    puts "\nВыберите маршрут:"
     input = gets.chomp.to_i
     @current_route = @main_routes[input-1]
-    puts "Выбран маршрут: #{@current_route}"
+    puts "Выбран маршрут: #{@current_route.title}"
   end
 
   def choise_carriage
-    puts "Выберите вагон:"
+    puts "\nВыберите вагон:"
     input = gets.chomp.to_i
     @current_carriage = @main_carriages[input-1]
     puts "Выбран вагон: #{@current_carriage}"
@@ -129,7 +129,7 @@ class Main
   def show_station
     if @main_station.any?
       @main_station.each.with_index(1) do |station, index|
-        print "#{index} Станция #{station.title}"
+        print "\n#{index} Станция #{station.title}"
         if station.trains.count > 0
           print " На станции поезда: "
           station.trains.each do |train|
@@ -162,51 +162,60 @@ class Main
 
   def add_station_to_route
     puts "Добавление станции в маршрут"
-    puts "Выберите маршрут"
-    unless show_routes
-      create_new_route
+    if @current_route == @na
+      choise_route if show_routes
     else
-      input = gets.chomp.to_i
-      route = @main_routes[input-1]
-      clear
-      puts "Выберите станцию для добавления в маршрут"
-      unless show_station
-        puts "нет станций"
-        main_menu
+      if @current_station == @na
+        choise_station if show_station
       else
-        input = gets.chomp.to_i
-        route.add_station @main_station[input-1]
-        #@main_station.delete_at(input-1) #не удалять станцию
-        clear
-        "Станция добавлена в маршрут"
-        route.show_route
-        menu_station
+        @current_route.add_station @current_station
+        print "Станция #{@current_station.title} добавлена в маршрут"
+        puts "#{@current_route.title}"
+        puts "#{@current_route.show_route}"
       end
     end
+    show_current_info
+    menu_station
   end
 
   def delete_station_from_route
-    puts "Выберите маршрут и введите его номер"
-    unless show_routes
-      create_new_route
+    show_current_info
+    if @current_route == @na
+      puts "Выберите маршрут и введите его номер"
+      choise_route if show_routes
+      delete_station_from_route
     else
+      puts "Выбран маршрут: #{@current_route.title}\n"
+      @current_route.show_route
+      if @current_route.stations.count == 2
+        clear
+        puts "Невозможно удалить станции из маршрута. В маршруте только 2 станции\n"
+        show_current_info
+        menu_route
+      end
+      if @current_station == @na
+        clear
+        show_current_info
+        puts "Станция для удаления не выбрана. Выберите станцию:\n"
+        choise_station if show_station
+      end
+      puts "Выбрана станция для удаления:#{@current_station.title}"
+      puts "\u001B[43m\u001B[31mОбратите внимание что нельзя удалять начальную и конечные станции маршрута\u001B[0m"
+      puts "Удалить станцию #{@current_station.title}? \n1. Удалить\n2.Выбрать другую"
       input = gets.chomp.to_i
-      route = @main_routes[input-1]
-    end
-    if route.stations.count == 2
-      puts "Невозможно удалить станции из маршрута. В маршруте только 2 станции\n"
-      menu_route
-    else
-      puts "Обратите внимание что нельзя удалять начальную и конечные станции маршрута"
-      puts "Выберите станцию для удаления:"
-      route.show_route
-      input = gets.chomp.to_i
-      station = route.stations[input-1]
-      print "Выбранная станция: #{station.title}"
-      route.del_station station
-      puts " удалена"
-      sleep(2)
-      main_menu
+      case input
+      when 2
+        clear
+        show_current_info
+        choise_station if show_station
+        delete_station_from_route
+      end
+      clear
+      @current_route.del_station(@current_station)
+      puts "Удалена станция #{@current_station.title} из маршрута\n\n"
+      @current_station = @na
+      show_current_info
+      menu_station
     end
   end
 
@@ -226,30 +235,38 @@ class Main
     case input
     when 0
       clear
+      show_current_info
       main_menu
     when 1
       clear
-      choise_station
+      show_current_info
+      show_station
       puts "\n"
       menu_station
     when 2
       clear
+      show_current_info
       create_new_station
     when 3
       clear
+      show_current_info
       add_station_to_route
     when 4
       clear
+      show_current_info
       delete_station_from_route
     when 5
       clear
+      show_current_info
       create_new_route
     when 6
     clear
+    show_current_info
     puts "Станции не прикреплённые к маршрутам:\n"
     show_station
     puts "\n\nСтанции в маршрутах"
     show_routes
+    menu_station
     end
   end
 
@@ -297,19 +314,25 @@ class Main
     if @current_train == @na
       puts "Выберите поезд для удаления"
       choise_train if show_trains
-    else
-      puts "Выбран: #{@current_train.number}"
-      puts "1. Удалить этот поезд. 2. Выбрать другой для удаления"
-      input = gets.chomp.to_i
-      case input
-      when 2
-        clear
-        choise_train if show_trains
-      end
-      @main_trains.delete(@current_train)
-      puts "Поезд #{@current_train.number} - удалён\n\n"
-      @current_train = @na
+      delete_train
     end
+    puts "#{@current_train.number} удалить?"
+    puts "1. Удалить этот поезд. 2. Выбрать другой для удаления 0. Отмена"
+    input = gets.chomp.to_i
+    case input
+    when 0
+      clear
+      show_current_info
+      main_menu
+    when 2
+      clear
+      @current_train = @na
+      delete_train
+    end
+    clear
+    @main_trains.delete(@current_train)
+    puts "Поезд #{@current_train.number} - удалён\n\n"
+    @current_train = @na
     show_current_info
     main_menu
   end
@@ -326,7 +349,7 @@ class Main
     if @current_route == @na
     choise_route if show_routes
     else
-      puts "Выбран маршрут: #{@current_route.stations.first.title} - #{@current_route.stations.last.title}"
+      puts "Выбран маршрут: #{@current_route.title}"
     end
     @current_train.add_route @current_route
     puts "Маршрут добавлен к поезду #{@current_train.number}"
@@ -346,16 +369,21 @@ class Main
   end
 
   def move_train_forward
-    puts "Выберите поезд"
-    unless show_trains
-      puts "Нет поездов для передвижения"
+    if @current_train == @na
+      puts "Выберите поезд:\n"
+      choise_train if show_trains
+      move_train_forward
+    elsif @current_train.route == nil
+      choise_route if show_routes
+      @current_train.add_route @current_route
+      move_train_forward
     else
-      input = gets.chomp.to_i
-      train = @main_trains[input-1]
-      train.move_forvard
-      puts "Поезд прибыл на следующую станцию #{train.current_station.title}"
-      menu_train
+      clear
+      @current_train.move_forvard
+      puts "Поезд прибыл на следующую станцию #{@current_train.current_station.title}"
     end
+    show_current_info
+    menu_train
   end
 
   def move_train_back
@@ -372,53 +400,57 @@ class Main
   end
 
   def menu_train
+    show_trains
     puts <<~TRM
       Поезд
-      1. Просмотр поездов
-      2. Создать поезд
-      3. Удалить поезд
-      4. Прицепить вагон к поезду
-      5. Отцепить вагон от поезда
-      6. Добавить маршрут поезду
-      7. Удалить маршрут у поезда
-      8. Переместить на станцию вперёд
-      9. Переместить на станцию назад
+      1. Создать поезд
+      2. Удалить поезд
+      3. Прицепить вагон к поезду
+      4. Отцепить вагон от поезда
+      5. Добавить маршрут поезду
+      6. Удалить маршрут у поезда
+      7. Переместить на станцию вперёд
+      8. Переместить на станцию назад
+      9. Выбрать поезд для добавления вагонов/\станций
       0. Выход в меню
     TRM
 
     input = gets.chomp.to_i
     case input
     when 0
-      clear main_menu
+      clear
+      show_current_info
+      main_menu
     when 1
       clear
-      show_trains
-      puts "\n\n"
-      menu_train
+      create_new_train
     when 2
       clear
-      create_new_train
+      delete_train
     when 3
       clear
-      delete_train
+      add_carriage_to_train
     when 4
       clear
-      add_carriage_to_train
+      remove_carriage_from_train
     when 5
       clear
-      remove_carriage_from_train
+      add_route_to_train
     when 6
       clear
-      add_route_to_train
+      remove_route_from_train
     when 7
       clear
-      remove_route_from_train
+      move_train_forward
     when 8
       clear
-      move_train_forward
+      move_train_back
     when 9
       clear
-      move_train_back
+      choise_train if show_trains
+      clear
+      show_current_info
+      main_menu
     end
   end
 
@@ -585,6 +617,7 @@ class Main
       main_menu
     when 1
       clear
+      show_current_info
       puts "Просмотр маршрутов"
       show_routes
       puts "\n"
@@ -597,7 +630,7 @@ class Main
       delete_route
     when 4
       clear
-      clear add_station_to_route
+      add_station_to_route
     when 5
       clear
       delete_station_from_route
