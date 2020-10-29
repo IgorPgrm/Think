@@ -4,13 +4,10 @@ require_relative 'passenger_train'
 require_relative 'passenger_carriage'
 require_relative 'route'
 require_relative 'station'
-require_relative 'test_data' #Для загрузки тестовых данных
+#require_relative 'test_data' #Для загрузки тестовых данных
 
-=begin
-     - Просматривать список станций и список поездов на станции
-=end
 class Main
-  include TestModule #Для загрузки тестовых данных
+  #include TestModule #Для загрузки тестовых данных
   def initialize
     @main_station = []
     @main_routes = []
@@ -23,7 +20,7 @@ class Main
     @current_station = @na
     @current_carriage = @na
 
-    seed #Для загрузки тестовых данных
+    #seed #Для загрузки тестовых данных
 
     show_current_info
     main_menu
@@ -115,7 +112,7 @@ class Main
     puts <<~EOF
       Создание новой станции
       Введите имя новой станции:
-  EOF
+    EOF
     name = gets.chomp
     station = Station.new(name)
     @main_station << station
@@ -232,36 +229,24 @@ class Main
       0. Главное меню
   ST
     input = gets.chomp.to_i
+    clear
+    show_current_info
     case input
     when 0
-      clear
-      show_current_info
       main_menu
     when 1
-      clear
-      show_current_info
       show_station
       puts "\n"
       menu_station
     when 2
-      clear
-      show_current_info
       create_new_station
     when 3
-      clear
-      show_current_info
       add_station_to_route
     when 4
-      clear
-      show_current_info
       delete_station_from_route
     when 5
-      clear
-      show_current_info
       create_new_route
     when 6
-    clear
-    show_current_info
     puts "Станции не прикреплённые к маршрутам:\n"
     show_station
     puts "\n\nСтанции в маршрутах"
@@ -368,35 +353,29 @@ class Main
     end
   end
 
-  def move_train_forward
+  def move_train direction
+    dir = ""
     if @current_train == @na
       puts "Выберите поезд:\n"
       choise_train if show_trains
-      move_train_forward
+      move_train direction
     elsif @current_train.route == nil
       choise_route if show_routes
       @current_train.add_route @current_route
-      move_train_forward
+      move_train direction
     else
       clear
-      @current_train.move_forvard
-      puts "Поезд прибыл на следующую станцию #{@current_train.current_station.title}"
+      if direction == 1
+        @current_train.move_forvard
+        dir = "следующую"
+      elsif direction == 2
+        dir = "предыдущую"
+        @current_train.move_back
+      end
+      puts "Поезд прибыл на #{dir} станцию #{@current_train.current_station.title}"
     end
     show_current_info
     menu_train
-  end
-
-  def move_train_back
-    puts "Выберите поезд"
-    unless show_trains
-      puts "Нет поездов для передвижения"
-    else
-      input = gets.chomp.to_i
-      train = @main_trains[input-1]
-      train.move_back
-      puts "Поезд прибыл на предыдущую станцию #{train.current_station.title}"
-      menu_train
-    end
   end
 
   def menu_train
@@ -416,35 +395,27 @@ class Main
     TRM
 
     input = gets.chomp.to_i
+    clear
+    show_current_info
     case input
     when 0
-      clear
-      show_current_info
       main_menu
     when 1
-      clear
       create_new_train
     when 2
-      clear
       delete_train
     when 3
-      clear
       add_carriage_to_train
     when 4
-      clear
       remove_carriage_from_train
     when 5
-      clear
       add_route_to_train
     when 6
-      clear
       remove_route_from_train
     when 7
-      clear
-      move_train_forward
+      move_train 1
     when 8
-      clear
-      move_train_back
+      move_train 2
     when 9
       clear
       choise_train if show_trains
@@ -478,6 +449,8 @@ class Main
       @main_carriages << CargoCarriage.new
     end
     puts "\nВагон создан\n"
+    show_current_info
+    puts "\n"
     show_carriages
     puts "\n"
     menu_carriage
@@ -559,27 +532,24 @@ class Main
     CAR
 
     input = gets.chomp.to_i
+    clear
+    show_current_info
     case input
     when 0
       clear
       main_menu
     when 1
-      clear
       show_carriages
       puts "\n"
       menu_carriage
     when 2
-      clear
       create_new_carriage
     when 3
-      clear
       delete_carriage
     when 4
-      clear
       puts "Добавление вагона к поезду"
       add_carriage_to_train
     when 5
-      clear
       remove_carriage_from_train
     end
   end
@@ -611,103 +581,83 @@ class Main
       0. Выход
     RO
     input = gets.chomp.to_i
+    clear
+    show_current_info
     case input
     when 0
-      clear
       main_menu
     when 1
-      clear
-      show_current_info
       puts "Просмотр маршрутов"
       show_routes
       puts "\n"
       menu_route
     when 2
-      clear
       create_new_route
     when 3
-      clear
       delete_route
     when 4
-      clear
       add_station_to_route
     when 5
-      clear
       delete_station_from_route
     end
   end
 
   def menu_show
-      puts "Выберите пункт меню: "
-      puts <<~MSH
-        1. Просмотр станций
-        2. Просмотр поездов
-        3. Просмотр маршрутов
-        4. Просмотр вагонов
-  
-        0. Выход из программы
-      MSH
+    puts "Выберите пункт меню: "
+    puts <<~MSH
+      1. Просмотр станций
+      2. Просмотр поездов
+      3. Просмотр маршрутов
+      4. Просмотр вагонов
 
-      input = gets.chomp.to_i
+      0. Выход из программы
+    MSH
+
+    input = gets.chomp.to_i
+    clear
+    show_current_info
       case  input
       when 1
-        clear
-        show_current_info
         show_station
       when 2
-        clear
-        show_current_info
         show_trains
       when 3
-        clear
-        show_current_info
         show_routes
       when 4
-        clear
-        show_current_info
         show_carriages
       end
   end
 
   def main_menu
-      puts "Выберите пункт меню: "
-      puts <<~MME
-        1. Станции \t[просмотр] | [создать] [добавить] [удалить]
-        2. Поезд \t[просмотр] | [создать] [удалить] | [Переместить вперёд] [Переместить назад]
-        3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
-        4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
-        5. Просмотр
+    puts "Выберите пункт меню: "
+    puts <<~MME
+      1. Станции \t[просмотр] | [создать] [добавить] [удалить]
+      2. Поезд \t[просмотр] | [создать] [удалить] | [Переместить вперёд] [Переместить назад]
+      3. Маршрут \t[просмотр] | [создать] [удалить] | [добавить станцию] [удалить станцию]
+      4. Вагоны \t[просмотр] | [создать] [удалить] | [прицепить] [отцепить]
+      5. Просмотр
   
-        0. Выход из программы
-      MME
+      0. Выход из программы
+    MME
 
-      @cmd = gets.chomp.to_i
-
-      case @cmd
-      when 0
-        clear
-        exit
-      when 1
-        clear
-        show_current_info
-        menu_station
-      when 2
-        clear
-        show_current_info
-        menu_train
-      when 3
-        clear
-        show_current_info
-        menu_route
-      when 4
-        clear
-        show_current_info
-        menu_carriage
-      when 5
-        clear
-        show_current_info
-        menu_show
-      end
+    @cmd = gets.chomp.to_i
+    clear
+    show_current_info
+    case @cmd
+    when 0
+      clear
+      exit
+    when 1
+      menu_station
+    when 2
+      menu_train
+    when 3
+      menu_route
+    when 4
+      menu_carriage
+    when 5
+      menu_show
+    end
   end
 end
 
