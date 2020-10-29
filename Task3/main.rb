@@ -14,6 +14,52 @@ require_relative 'station'
 @main_trains = []
 @main_carriages = []
 @cmd = 0
+@na = "N/a".to_sym
+@current_train = @na
+@current_route = @na
+@current_station = @na
+@current_carriage = @na
+
+def show_current_info
+  print "Выбраны: поезд:["
+  print @current_train == @na ? "#{@na}" : "#{@current_train.number}"
+  print"] станция:["
+  print @current_station == @na ? "#{@na}" : "#{@current_station.title}"
+  print "] маршрут:["
+  print @current_route == @na ? "#{@na}" : "#{@current_route.stations.first.title} - #{@current_route.stations.last.title}"
+  print "] вагон:["
+  print @current_carriage == @na ? "#{@na}" : "#{@current_carriage.type}"
+  print "] \n"
+end
+
+def choise_station
+  puts "Выберите станцию:"
+  input = gets.chomp.to_i
+  @current_station = @main_station[input-1]
+  puts "Выбрана станция: #{@current_station}"
+end
+
+def choise_route
+  puts "Выберите маршрут:"
+  input = gets.chomp.to_i
+  @current_route = @main_routes[input-1]
+  puts "Выбран маршрут: #{@current_route}"
+end
+
+def choise_carriage
+  puts "Выберите вагон:"
+  input = gets.chomp.to_i
+  @current_carriage = @main_carriages[input-1]
+  puts "Выбран вагон: #{@current_carriage}"
+end
+
+def choise_train
+  puts "Выберите поезд:"
+  input = gets.chomp.to_i
+  @current_train = @main_trains[input-1]
+  puts "Выбран поезд: #{@current_train.number}"
+end
+
 
 def choise_two_station
   two_station = [nil, nil]
@@ -44,17 +90,14 @@ def create_new_route
   puts "Создание нового маршрута"
   if @main_station.size < 2
     puts "Для составления маршрута, необходимо 2 станции"
-    sleep(2)
-    clear
     create_new_station
   else
-    clear
     two_station = choise_two_station
     @main_routes << Route.new(two_station.first, two_station.last)
+    clear
     puts "Был создан маршрут:"
     print "#{@main_routes.last.stations.first.title} -> "
     print "#{@main_routes.last.stations.last.title} \n"
-    sleep(2)
     menu_route
   end
 end
@@ -69,7 +112,8 @@ EOF
   @main_station << station
   clear
   puts "Создана станция: #{station.title}"
-  sleep(0.5)
+  @current_station = @main_station.last
+  show_current_info
   menu_station
 end
 
@@ -160,11 +204,12 @@ end
 def menu_station
   puts <<~ST
     Станции
-    1. Просмотр станций
+    1. Выбрать станцию
     2. Создать станцию
     3. Добавить к существующему маршруту
     4. Удалить станцию из существующего маршрута
     5. Создать новый маршрут
+    6. Показать станции
 
     0. Главное меню
 ST
@@ -175,12 +220,7 @@ ST
     main_menu
   when 1
     clear
-    puts "Станции не прикреплённые к маршрутам:\n"
-    show_station
-    if  @main_routes.any?
-    puts "\n\nСтанции в маршрутах"
-    show_routes
-    end
+    choise_station
     puts "\n"
     menu_station
   when 2
@@ -195,12 +235,18 @@ ST
   when 5
     clear
     create_new_route
+  when 6
+  clear
+  puts "Станции не прикреплённые к маршрутам:\n"
+  show_station
+  puts "\n\nСтанции в маршрутах"
+  show_routes
   end
 end
 
 def show_trains
   unless @main_trains.any?
-    puts "\u001B[31mНет поездов для отображения\u001B[0m\n\n"
+    puts "\u001B[31mНет поездов для отображения\u001B[0m\n"
     false
   else
     puts "Список поездов:"
@@ -229,49 +275,55 @@ def create_new_train
     type = :cargo
   end
   clear
-  @main_trains << Train.new(number, type)
-  puts "\nПоезд добавлен\n"
+  @current_train = Train.new(number, type)
+  @main_trains << @current_train
+  show_current_info
+  puts "\nПоезд создан\n"
   show_trains
   puts "\n"
   menu_train
 end
 
 def delete_train
-  unless show_trains
-    puts "Поездов нет, удалять нечего"
-  else
+  if @current_train == @na
     puts "Выберите поезд для удаления"
+    choise_train if show_trains
+  else
+    puts "Выбран: #{@current_train.number}"
+    puts "1. Удалить этот поезд. 2. Выбрать другой для удаления"
     input = gets.chomp.to_i
-    puts "Выбран: #{input}"
-    puts "Поезд #{@main_trains[input-1].number} - удалён"
-    @main_trains.delete_at(input-1)
+    case input
+    when 2
+      clear
+      choise_train if show_trains
+    end
+    @main_trains.delete(@current_train)
+    puts "Поезд #{@current_train.number} - удалён\n\n"
+    @current_train = @na
   end
-  menu_train
+  show_current_info
+  main_menu
 end
 
 def add_route_to_train
-  puts "Добавление маршрута поезду"
-  unless show_trains
-    puts "Нужно создать поезд"
-    menu_train
+  if @current_train == @na
+    puts "Добавление маршрута поезду"
+    choise_train if show_trains
   else
-    puts "Выберите поезд"
-    input = gets.chomp.to_i
-    train = @main_trains[input-1]
-    puts "Выберите маршрут"
-    unless show_routes
-      puts "Нет маршрутов для добавления. Необходимо создать маршрут"
-      menu_route
-    else
-      input = gets.chomp.to_i
-      route = @main_routes[input-1]
-      train.add_route route
-      clear
-      puts "Добвлен маршрут #{route} к поезду #{train}"
-      puts "Текущая станция поезда #{train.current_station.title}"
-      menu_route
-    end
+    puts "Выбран поезд :#{@current_train.number} Тип: #{@current_train.type}"
   end
+  if @current_route == @na
+  puts "Выберите маршрут"
+  choise_route if show_routes
+  else
+    puts "Выбран маршрут: #{@current_route.stations.first.title} - #{@current_route.stations.last.title}"
+  end
+  @current_train.add_route @current_route
+  puts "Маршрут добавлен к поезду #{@current_train.number}"
+  puts "Текущая станция поезда #{@current_train.current_station.title}"
+  @current_route, @current_train = @na
+  show_current_info
+  menu_route
 end
 
 def remove_route_from_train
@@ -562,21 +614,24 @@ def menu_show
     case  input
     when 1
       clear
+      show_current_info
       show_station
     when 2
       clear
+      show_current_info
       show_trains
     when 3
       clear
+      show_current_info
       show_routes
     when 4
       clear
+      show_current_info
       show_carriages
     end
 end
 
 def main_menu
-  loop do
     puts "Выберите пункт меню: "
     puts <<~MME
       1. Станции \t[просмотр] | [создать] [добавить] [удалить]
@@ -596,22 +651,26 @@ def main_menu
       exit
     when 1
       clear
+      show_current_info
       menu_station
     when 2
       clear
+      show_current_info
       menu_train
     when 3
       clear
+      show_current_info
       menu_route
     when 4
       clear
+      show_current_info
       menu_carriage
     when 5
       clear
+      show_current_info
       menu_show
     end
-    break
-  end
 end
 
+show_current_info
 main_menu
