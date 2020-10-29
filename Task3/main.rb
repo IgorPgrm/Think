@@ -31,14 +31,14 @@ def choise_two_station
       puts "Выберите начальную станцию в маршруте из списка и введите её номер или 0 для выхода:"
       input = gets.chomp.to_i
       two_station[0] = @main_station[input-1]
-      @main_station.delete_at(input-1)
+      #@main_station.delete_at(input-1) #не удалять
       clear
     else
       if two_station[1].nil?
         puts "Выберите конечную станцию в маршруте из списка и введите её номер или 0 для выхода:"
         input = gets.chomp.to_i
         two_station[1] = @main_station[input-1]
-        @main_station.delete_at(input-1)
+        #@main_station.delete_at(input-1) #не удалять
         clear
       else
         break
@@ -101,7 +101,7 @@ def show_routes
       puts "#{route.show_route}"
     end
   else
-    puts "Нет маршрутов для отображения"
+    puts "\u001B[31mНет маршрутов для отображения\u001B[0m\n\n"
     false #необходимо для проверки
   end
 end
@@ -119,7 +119,7 @@ def add_station_to_route
     show_station
     input = gets.chomp.to_i
     route.add_station @main_station[input-1]
-    @main_station.delete_at(input-1)
+    #@main_station.delete_at(input-1) #не удалять станцию
     clear
     "Станция добавлена в маршрут"
     route.show_route
@@ -191,7 +191,7 @@ end
 
 def show_trains
   unless @main_trains.any?
-    puts "Нет поездов для отображения\n\n"
+    puts "\u001B[31mНет поездов для отображения\u001B[0m\n\n"
     false
   else
     puts "Список поездов:"
@@ -238,6 +238,36 @@ def delete_train
   menu_train
 end
 
+def add_route_to_train
+  puts "Добавление маршрута поезду"
+  unless show_trains
+    puts "Нужно создать поезд"
+    menu_train
+  else
+    puts "Выберите поезд"
+    input = gets.chomp.to_i
+    train = @main_trains[input-1]
+    puts "Выберите маршрут"
+    unless show_routes
+      puts "Нет маршрутов для добавления. Необходимо создать маршрут"
+      menu_route
+    else
+      input = gets.chomp.to_i
+      route = @main_routes[input-1]
+      train.add_route route
+      clear
+      puts "Добвлен маршрут #{route} к поезду #{train}"
+      puts "Текущая станция поезда #{train.current_station.title}"
+      menu_route
+    end
+  end
+end
+
+def remove_route_from_train
+  puts "Заглушка для метода"
+  menu_route
+end
+
 def menu_train
   puts <<~TRM
   Поезд
@@ -269,6 +299,15 @@ def menu_train
   when 4
     clear
     add_carriage_to_train
+  when 5
+    clear
+    remove_carriage_from_train
+  when 6
+    clear
+    add_route_to_train
+  when 7
+    clear
+    remove_route_from_train
   end
 end
 
