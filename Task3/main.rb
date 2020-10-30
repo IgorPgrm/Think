@@ -425,6 +425,7 @@ class Main
   def show_carriages
     unless @main_carriages.any?
       puts "Нет вагонов для отображения"
+      false
     else
       puts "Список вагонов:"
       @main_carriages.each.with_index(1) do |carriage, index|
@@ -571,18 +572,29 @@ class Main
 
   def delete_route
     puts "Выберите маршрут для удаления"
-    unless show_routes
-      create_new_route
+    if @current_route == @na
+      choise_route if show_routes
+      delete_route
     else
-    input = gets.chomp.to_i
+      puts "Выбранный маршрут: #{@current_route.title} . 1-Удалить 2-Выбрать другой 0-Отмена"
+      input = gets.chomp.to_i
+      case input
+      when 0
+        clear
+        show_current_info
+        main_menu
+      when 2
+        clear
+        @current_route = @na
+        delete_route
+      end
+      clear
+      @main_routes.delete(@current_route)
+      puts "Маршрут #{@current_route.title} - удалён\n\n"
+      @current_route = @na
+      show_current_info
+      main_menu
     end
-    puts "Выбран маршрут для удаления: #{@main_routes[input-1].stations.first.title} -
-          #{@main_routes[input-1].stations.last.title}"
-    @main_routes.delete_at(input-1)
-    puts "Маршрут удалён"
-    show_routes
-    puts "\n"
-    menu_route
   end
 
   def menu_route
@@ -635,16 +647,18 @@ class Main
     input = gets.chomp.to_i
     clear
     show_current_info
-      case  input
-      when 1
-        show_station
-      when 2
-        show_trains
-      when 3
-        show_routes
-      when 4
-        show_carriages
-      end
+    case  input
+    when 1
+      show_station
+    when 2
+      show_trains
+    when 3
+      show_routes
+    when 4
+      show_carriages
+    end
+    show_current_info
+    main_menu
   end
 
   def main_menu
