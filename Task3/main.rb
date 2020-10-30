@@ -160,10 +160,12 @@ class Main
   def add_station_to_route
     puts "Добавление станции в маршрут"
     if @current_route == @na
-      choise_route if show_routes
+      show_routes ? choise_route : create_new_route
+      add_station_to_route
     else
       if @current_station == @na
         choise_station if show_station
+        add_station_to_route
       else
         @current_route.add_station @current_station
         print "Станция #{@current_station.title} добавлена в маршрут"
