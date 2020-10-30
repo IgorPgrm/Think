@@ -100,6 +100,7 @@ class Main
     else
       two_station = choise_two_station
       @main_routes << Route.new(two_station.first, two_station.last)
+      @current_route = @main_routes.last
       clear
       puts "Был создан маршрут:"
       print "#{@main_routes.last.stations.first.title} -> "
@@ -150,28 +151,55 @@ class Main
       @main_routes.each.with_index(1) do |route, index|
         print "#{index}.\t"
         puts "#{route.show_route}"
+        puts "Поезда с этим маршрутом:\n"
+        @main_trains.each { |train|
+          puts "[#{train.number}]" if train.route == route}
       end
     else
       puts "\u001B[31mНет маршрутов для отображения\u001B[0m\n\n"
-      false #необходимо для проверки
+      false
+    end
+  end
+
+  def def_current_route
+    if @current_route == @na
+      show_routes ? choise_route : create_new_route
+    else
+      @current_route
+    end
+  end
+
+  def def_current_station
+    if @current_station == @na
+      show_station ? choise_station : create_new_station
+    else
+      @current_station
+    end
+  end
+
+  def def_current_train
+    if @current_train == @na
+      show_trains ? choise_train : create_new_train
+    else
+      @current_train
+    end
+  end
+
+  def def_current_carriage
+    if @current_carriage == @na
+      show_carriages ? choise_carriage : create_new_carriage
+    else
+      @current_carriage
     end
   end
 
   def add_station_to_route
     puts "Добавление станции в маршрут"
-    if @current_route == @na
-      show_routes ? choise_route : create_new_route
-      add_station_to_route
-    else
-      if @current_station == @na
-        choise_station if show_station
-        add_station_to_route
-      else
-        @current_route.add_station @current_station
-        print "Станция #{@current_station.title} добавлена в маршрут"
-        puts "#{@current_route.title}"
-        puts "#{@current_route.show_route}"
-      end
+    if def_current_station && def_current_route
+      @current_route.add_station @current_station
+      print "Станция #{@current_station.title} добавлена в маршрут "
+      puts "#{@current_route.title}"
+      puts "#{@current_route.show_route}"
     end
     show_current_info
     menu_station
@@ -322,23 +350,35 @@ class Main
   end
 
   def add_route_to_train
+    quest = "Продолжить добавление маршрута к поезду? \n1-Да \n2-Выбрать другой \n0-Отмена\n"
     puts "Добавление маршрута поезду"
-    if @current_train == @na
-      menu_train unless show_trains
+    puts "Выбран поезд :#{@current_train.number} Тип: #{@current_train.type}" if def_current_train
+    puts quest
+    input = gets.chomp.to_i
+    case input
+    when 2
+      clear
       choise_train if show_trains
-    else
-      puts "Выбран поезд :#{@current_train.number} Тип: #{@current_train.type}"
+    when 0
+      clear
+      show_current_info
+      main_menu
     end
-    puts "Выберите маршрут"
-    if @current_route == @na
-    choise_route if show_routes
-    else
-      puts "Выбран маршрут: #{@current_route.title}"
+    puts "Выберан маршрут: #{@current_route.title}" if def_current_route
+    puts quest
+    input = gets.chomp.to_i
+    case input
+    when 2
+      clear
+      choise_route if show_routes
+    when 0
+      clear
+      show_current_info
+      main_menu
     end
     @current_train.add_route @current_route
     puts "Маршрут добавлен к поезду #{@current_train.number}"
-    puts "Текущая станция поезда #{@current_train.current_station.title}"
-    @current_route, @current_train = @na
+    puts "Текущая станция поезда #{@current_station.title}"
     show_current_info
     menu_route
   end
