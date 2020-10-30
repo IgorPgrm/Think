@@ -264,9 +264,8 @@ class Main
       @main_trains.each.with_index(1) do |train, index|
         type = "Пассажирский" if train.type == :passenger
         type = "Грузовой" if train.type == :cargo
-        print "#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number} "
+        print "#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number} \n"
         puts "На станции:#{train.current_station.title}" unless train.current_station.nil?
-        puts
       end
     end
   end
@@ -286,12 +285,10 @@ class Main
       type = :cargo
     end
     clear
-    @current_train = Train.new(number, type)
-    @main_trains << @current_train
+    @main_trains << Train.new(number, type)
+    @current_train = @main_trains.last
     show_current_info
-    puts "\nПоезд создан\n"
-    show_trains
-    puts "\n"
+    puts "Создан поезд #{@current_train.number}\n"
     menu_train
   end
 
@@ -380,6 +377,7 @@ class Main
 
   def menu_train
     show_trains
+    print "\n"
     puts <<~TRM
       Поезд
       1. Создать поезд
@@ -447,7 +445,9 @@ class Main
     when 2
       @main_carriages << CargoCarriage.new
     end
-    puts "\nВагон создан\n"
+    @current_carriage = @main_carriages.last
+    clear
+    puts "Вагон создан\n"
     show_current_info
     puts "\n"
     show_carriages
@@ -456,16 +456,28 @@ class Main
   end
 
   def delete_carriage
-    unless show_carriages
-      puts "Вагонов нет, удалять нечего"
+    if @current_carriage == @na
+      puts "Вагон не выбран, удалять нечего\n"
+      main_menu
     else
-      puts "Выберите вагон для удаления"
+      puts "Выбран вагон #{@current_carriage.type}. Удалить? 1- Да 2-Выбрать другой 0-Отмена\n"
       input = gets.chomp.to_i
-      puts "Выбран: #{input}"
-      puts "Вагон #{@main_carriages[input-1]} - удалён"
-      @main_carriages.delete_at(input-1)
+      clear
+      show_current_info
+      case input
+      when 0
+        main_menu
+      when 2
+        @current_carriage = @na
+        delete_carriage
+      end
+      clear
+      @main_carriages.delete(@current_carriage)
+      puts "Вагон #{@current_carriage.type} - удалён\n\n"
+      @current_train = @na
+      show_current_info
+      main_menu
     end
-    menu_carriage
   end
 
   def add_carriage_to_train
