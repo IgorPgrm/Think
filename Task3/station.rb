@@ -1,9 +1,11 @@
 class Station
   attr_reader :title, :trains
+  @@all_station = []
 
   def initialize(title)
     @title = title
     @trains = []
+    add_station(self)
   end
 
   def add_train train
@@ -20,5 +22,14 @@ class Station
 
   def show_trains_on_station_by_type type #отображение по типу
     @trains.each { |train| puts "\t\t #{train.number}\t| #{train.type}\t| #{train.carriages}"  if train.type == type}
+  end
+
+  def self.all
+    @@all_station
+  end
+
+  private
+  def add_station station
+    @@all_station << station
   end
 end
