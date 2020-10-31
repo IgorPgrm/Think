@@ -4,12 +4,14 @@ class Train
   include ModuleManufacturer::InstanceMethods
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
+  @@all_trains = []
 
   def initialize number, type
     @number = number
     @type = type
     @speed = 0
     @carriages = [] #чтобы не был nilclass
+    add_train_to_all self
   end
 
   def show_info
@@ -79,4 +81,19 @@ class Train
     end
   end
 
+  def self.find param
+    if @@all_trains.any?
+      @@all_trains.each do |train|
+        if train.number == param
+          return train
+        end
+      end
+    end
+    return nil
+  end
+
+  private
+  def add_train_to_all train
+    @@all_trains << train
+  end
 end
