@@ -1,4 +1,7 @@
+require_relative 'module'
+
 class Train
+  include ModuleManufacturer::InstanceMethods
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
 

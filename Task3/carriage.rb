@@ -1,4 +1,7 @@
+require_relative 'module'
+
 class Carriage
+  include ModuleManufacturer::InstanceMethods
   attr_reader :type
 
   def initialize(type)
