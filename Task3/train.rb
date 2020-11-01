@@ -1,7 +1,9 @@
 require_relative 'module'
+require_relative 'instance_counter'
 
 class Train
   include ModuleManufacturer::InstanceMethods
+  include InstanceCounter
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
   @@all_trains = []
@@ -10,7 +12,7 @@ class Train
     @number = number
     @type = type
     @speed = 0
-    @carriages = [] #чтобы не был nilclass
+    @carriages = []
     add_train_to_all self
   end
 

@@ -1,10 +1,12 @@
 class Route
+  include InstanceCounter
   attr_reader :stations, :title
 
   def initialize (first_station, last_station)
     @first_station, @last_station = first_station, last_station
     @title = first_station.title.to_s + " -> " + last_station.title.to_s
     @stations = [ @first_station, @last_station]
+    register_instance
   end
 
   def show_route

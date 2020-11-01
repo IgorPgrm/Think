@@ -6,6 +6,7 @@ class Carriage
 
   def initialize(type)
     @type = type
+    register_instance
   end
 
   def show_info
