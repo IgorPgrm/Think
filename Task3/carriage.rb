@@ -6,10 +6,22 @@ class Carriage
 
   def initialize(type)
     @type = type
-    register_instance
+    validate!
+    #register_instance
   end
 
   def show_info
     puts "class #{self.class}"
+  end
+
+  def validate?
+    validate!
+  rescue
+    false
+  end
+
+  protected
+  def validate!
+    raise ArgumentError, "Тип вагона указан неверно" unless [:passenger, :cargo].include?(type)
   end
 end
