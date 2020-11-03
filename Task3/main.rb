@@ -302,6 +302,7 @@ class Main
 
   def create_new_train
     puts "Создание нового поезда \n\n"
+    begin
     puts "Введите номер поезда:"
     number = gets.chomp.to_s
     clear
@@ -316,6 +317,11 @@ class Main
     end
     clear
     @main_trains << Train.new(number, type)
+    rescue ArgumentError => e
+    puts "Ошибка"
+    puts e.message
+    retry
+    end
     @current_train = @main_trains.last
     show_current_info
     puts "Создан поезд #{@current_train.number}\n"
