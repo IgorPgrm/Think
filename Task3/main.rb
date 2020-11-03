@@ -484,7 +484,7 @@ class Main
     input = gets.chomp.to_i
     case input
     when 1
-      @main_carriages << PassangerCarriage.new
+      @main_carriages << PassengerCarriage.new
     when 2
       @main_carriages << CargoCarriage.new
     end
