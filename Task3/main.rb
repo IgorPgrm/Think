@@ -11,7 +11,7 @@ class Main
   def initialize
     @main_station = []
     @main_routes = []
-    @main_trains = []
+    @main_trains = {}
     @main_carriages = []
     @cmd = 0
     @na = "N/a".to_sym
@@ -297,11 +297,11 @@ class Main
       false
     else
       puts "Список поездов:"
-      @main_trains.each.with_index(1) do |train, index|
-        type = "Пассажирский" if train.type == :passenger
-        type = "Грузовой" if train.type == :cargo
-        print "#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number} \n"
-        puts "На станции:#{train.current_station.title}" unless train.current_station.nil?
+      @main_trains.each.with_index(1) do |(key, value), index|
+        type = "Пассажирский" if value.type == :passenger
+        type = "Грузовой" if value.type == :cargo
+        print "#{index}.\t#{type}\tВагоны: #{value.carriages.count}\tПоезд: #{value.number} \n"
+        puts "На станции:#{value.current_station.title}" unless value.current_station.nil?
       end
     end
   end
@@ -322,15 +322,15 @@ class Main
       type = :cargo
     end
     clear
-    @main_trains << Train.new(number, type)
+    @current_train = Train.new(number, type)
+    @main_trains[number.to_s] = @current_train
     rescue ArgumentError => e
     puts "Ошибка"
     puts e.message
     retry
     end
-    @current_train = @main_trains.last
     show_current_info
-    puts "Создан поезд #{@current_train.number}\n"
+    puts "Создан поезд #{@current_train.number}\n\n"
     menu_train
   end
 
