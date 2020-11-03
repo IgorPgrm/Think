@@ -109,7 +109,6 @@ class Train
 
   protected
   def validate!
-    raise ArgumentError, "Номер не может быть пустым" if number.empty?
     raise ArgumentError, "Номер не может быть меньше 5 символов" if number.length < 5
     raise ArgumentError, "Неправильно задан номер. Формат 123-45 или АБВ-ГД" if NUMBERREGEX !~ number
     true
