@@ -114,8 +114,14 @@ class Main
       Создание новой станции
       Введите имя новой станции:
     EOF
+  begin
     name = gets.chomp
     station = Station.new(name)
+  rescue ArgumentError => e
+    puts "Ошибка"
+    puts e.message
+    retry
+  end
     @main_station << station
     clear
     puts "Создана станция: #{station.title}"
