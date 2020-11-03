@@ -43,6 +43,7 @@ class Station
   protected
   def validate!
     raise ArgumentError, "Неверный формат. Формат: 'Москва', 'Москва-2', 'Йошкар-ола'" if title !~ STATIONREGEXP
+    raise ArgumentError, "Название должно быть минимум 3 символа" if title.length < 3
   end
 
   def add_station station
