@@ -1,13 +1,23 @@
+require_relative 'instance_counter'
+
 class Station
   include InstanceCounter
   attr_reader :title, :trains
   @@all_station = []
+  STATIONREGEXP = /^[A-Z А-Я]+[а-я \w]+-?[\d]?[А-Я а-я \w 0-9]*/
 
   def initialize(title)
     @title = title
+    validate!
     @trains = []
     add_station(self)
     register_instance
+  end
+
+  def validate?
+    validate!
+  rescue
+    false
   end
 
   def add_train train
@@ -30,7 +40,11 @@ class Station
     @@all_station
   end
 
-  private
+  protected
+  def validate!
+    raise ArgumentError, "Неверный формат. Формат: 'Москва', 'Москва-2', 'Йошкар-ола'" if title !~ STATIONREGEXP
+  end
+
   def add_station station
     @@all_station << station
   end
