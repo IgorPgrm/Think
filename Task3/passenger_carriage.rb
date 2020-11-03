@@ -1,6 +1,6 @@
 require_relative 'carriage'
 
-class PassangerCarriage < Carriage
+class PassengerCarriage < Carriage
   attr_accessor :number_seats
   attr_reader :residue_number
 
