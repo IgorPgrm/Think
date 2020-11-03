@@ -7,13 +7,21 @@ class Train
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
   @@all_trains = []
+  NUMBERREGEX = /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i
 
   def initialize number, type
     @number = number
+    validate!
     @type = type
     @speed = 0
     @carriages = []
     add_train_to_all self
+  end
+
+  def validate?
+    validate!
+  rescue
+    false
   end
 
   def show_info
@@ -97,5 +105,13 @@ class Train
   private
   def add_train_to_all train
     @@all_trains << train
+  end
+
+  protected
+  def validate!
+    raise ArgumentError, "Номер не может быть пустым" if number.empty?
+    raise ArgumentError, "Номер не может быть меньше 5 символов" if number.length < 5
+    raise ArgumentError, "Неправильно задан номер. Формат 123-45 или АБВ-ГД" if NUMBERREGEX !~ number
+    true
   end
 end
