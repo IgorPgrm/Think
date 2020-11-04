@@ -1,11 +1,12 @@
 require_relative 'carriage'
 
 class PassengerCarriage < Carriage
-  attr_reader :total_count, :places, :free_places
+  attr_reader :total_count, :places, :free_places, :busy_places
 
   def initialize(residue_count)
     @total_count = residue_count
     @free_places = residue_count
+    @busy_places = 0
     @places = []
     super(:passenger)
     @total_count.times { @places << :free } unless @total_count == 0
@@ -16,7 +17,8 @@ class PassengerCarriage < Carriage
     @places.each_with_index do |place, index|
       if place == :free
         @places[index] = :passenger
-        @free_places -= 1
+        @busy_places += 1
+        @free_places = @total_count - @busy_places
         break
       end
     end
