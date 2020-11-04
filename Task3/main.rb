@@ -46,6 +46,7 @@ class Main
   end
 
   def choise_route
+    create_new_route if @main_routes.empty?
     puts "\nВыберите маршрут:"
     input = gets.chomp.to_i
     @current_route = @main_routes[input-1]
