@@ -11,7 +11,11 @@ class Carriage
   end
 
   def show_info
-    puts "class #{self.class}"
+    if self.type == :passenger
+      print "Всего мест: [#{self.total_count}] Занято: [#{self.busy_places}] Свободно: [#{self.free_places}]"
+    else
+      print "Всего объёма: [#{self.total_volume}] Занято: [#{self.busy_volume}] Свободно: [#{self.free_volume}]"
+    end
   end
 
   def validate?
