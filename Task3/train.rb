@@ -36,6 +36,14 @@ class Train
     @speed -= 1 if @speed.positive?
   end
 
+  def each_carriage(&block)
+    if block_given?
+      @carriages.each do |с|
+        block.call(с)
+      end
+    end
+  end
+
   def stop
     @speed = 0
   end
