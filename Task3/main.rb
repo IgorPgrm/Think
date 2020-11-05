@@ -28,7 +28,7 @@ class Main
 
   def show_current_info
     print "Выбраны: поезд:["
-    print @current_train == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_train.number}\u001B[0m"
+    print @current_train == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_train.last.number}\u001B[0m"
     print"] станция:["
     print @current_station == @na ? "\u001B[31m#{@na}\u001B[0m" : "\u001B[32m#{@current_station.title}\u001B[0m"
     print "] маршрут:["
@@ -341,7 +341,7 @@ class Main
       choise_train if show_trains
       delete_train
     end
-    puts "#{@current_train.number} удалить?"
+    puts "#{@current_train.last.number} удалить?"
     puts "1. Удалить этот поезд. 2. Выбрать другой для удаления 0. Отмена"
     input = gets.chomp.to_i
     case input
@@ -355,8 +355,8 @@ class Main
       delete_train
     end
     clear
-    @main_trains.delete(@current_train)
-    puts "Поезд #{@current_train.number} - удалён\n\n"
+    @main_trains.delete(@current_train.first.to_sym)
+    puts "Поезд #{@current_train.last.number} - удалён\n\n"
     @current_train = @na
     show_current_info
     main_menu
