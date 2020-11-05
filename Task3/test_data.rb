@@ -5,8 +5,29 @@ module TestModule
       index %2 == 0 ? type = :passenger : type = :cargo
       @main_trains << Train.new(train, type)
     end
-
     @current_train = @main_trains.first
+
+    10.times{@main_carriages << PassengerCarriage.new(54)}
+    10.times{@main_carriages << CargoCarriage.new(10_000)}
+    rand = Random.new
+    @main_carriages.each do |car|
+      if car.type == :passenger
+        rand.rand(54).times do
+          car.add_passenger
+        end
+      @current_train.add_carriage car
+      elsif car.type == :cargo
+        car.load rand.rand(10000)
+        @main_trains[1].add_carriage car
+      else
+        raise ArgumentError, "Неверный тип вагона"
+      end
+    end
+
+
+
+
+
     @main_station << Station.new("Москва")
     @main_station << Station.new("Тула")
     @main_station << Station.new("Новгород")
@@ -28,9 +49,6 @@ module TestModule
     @current_route = route2
     @current_station = @main_station.last
 
-    10.times{@main_carriages << PassengerCarriage.new(54)}
-    10.times{@main_carriages << CargoCarriage.new(10_000)}
-    @current_carriage = @main_carriages.last
     @main_carriages.shuffle!.shuffle!
   end
 end
