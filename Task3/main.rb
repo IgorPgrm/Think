@@ -527,7 +527,8 @@ class Main
       @main_carriages.each.with_index(1) do |carriage, index|
         type = "Пассажирский" if carriage.type == :passenger
         type = "Грузовой" if carriage.type == :cargo
-        puts "\t#{index}.\t#{type}\t\tВагон: #{carriage}"
+        print "\t#{index}. #{type} "
+        puts "#{carriage.show_info}"
       end
     end
   end
@@ -628,6 +629,19 @@ class Main
     end
   end
 
+  def fill_carriage
+    choise_carriage if show_carriages
+    if @current_carriage.type == :passenger
+      @current_carriage.add_passenger
+      puts "Пассажир добавлен."
+    elsif @current_carriage.type == :cargo
+      @current_carriage.load 100
+      puts "В вагон добавлено 100"
+    end
+    @current_carriage.show_info
+    menu_carriage
+  end
+
   def menu_carriage
     puts <<~CAR
       Вагоны
@@ -637,6 +651,7 @@ class Main
       4. Добавить вагон к поезду
       5. Удалить вагон из поезда
       6. Выбрать вагон
+      7. Занять место/\объём в вагоне
       0. Главное меню
     CAR
 
@@ -663,6 +678,10 @@ class Main
     when 6
       choise_carriage if show_carriages
       menu_carriage
+    when 7
+      clear
+      show_current_info
+      fill_carriage
     end
   end
 
