@@ -4,10 +4,10 @@ require_relative 'passenger_train'
 require_relative 'passenger_carriage'
 require_relative 'route'
 require_relative 'station'
-#require_relative 'test_data' #Для загрузки тестовых данных
+require_relative 'test_data' #Для загрузки тестовых данных
 
 class Main
-  #include TestModule #Для загрузки тестовых данных
+  include TestModule #Для загрузки тестовых данных
   def initialize
     @main_station = []
     @main_routes = []
@@ -20,7 +20,7 @@ class Main
     @current_station = @na
     @current_carriage = @na
 
-    #seed #Для загрузки тестовых данных
+    seed #Для загрузки тестовых данных
 
     show_current_info
     main_menu
