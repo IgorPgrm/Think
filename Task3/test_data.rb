@@ -1,10 +1,11 @@
 module TestModule
   def seed
-    @main_trains << Train.new("SAP-12", :passenger)
-    @main_trains << Train.new("LAST0", :passenger)
-    @main_trains << Train.new("EXPRS", :passenger)
-    @main_trains << Train.new("CAR-10", :cargo)
-    @main_trains << Train.new("VLKSM", :cargo)
+    trains = %w[SAP-12 LAST0 EXPRS CAR-10 VL0-12 APP-99 CTR-12]
+    trains.each_with_index do |train, index|
+      index %2 == 0 ? type = :passenger : type = :cargo
+      @main_trains << Train.new(train, type)
+    end
+
     @current_train = @main_trains.first
     @main_station << Station.new("Москва")
     @main_station << Station.new("Тула")
@@ -27,8 +28,8 @@ module TestModule
     @current_route = route2
     @current_station = @main_station.last
 
-    10.times{@main_carriages << PassangerCarriage.new()}
-    10.times{@main_carriages << CargoCarriage.new()}
+    10.times{@main_carriages << PassengerCarriage.new(54)}
+    10.times{@main_carriages << CargoCarriage.new(10_000)}
     @current_carriage = @main_carriages.last
     @main_carriages.shuffle!.shuffle!
   end

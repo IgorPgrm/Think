@@ -11,7 +11,7 @@ class Main
   def initialize
     @main_station = []
     @main_routes = []
-    @main_trains = {}
+    @main_trains = []
     @main_carriages = []
     @cmd = 0
     @na = "N/a".to_sym
@@ -63,10 +63,8 @@ class Main
   def choise_train
     puts "Выберите поезд:"
     input = gets.chomp.to_i
-    mass = @ma
     @current_train = @main_trains[input-1]
-    puts ">>>>>>>>>#{@main_trains.inspect}<<<<<<<<<<<<<<<<"
-    puts "Выбран поезд: #{@current_train.last.number}"
+    puts "Выбран поезд: #{@current_train.number}"
   end
 
 
@@ -300,11 +298,11 @@ class Main
       false
     else
       puts "Список поездов:"
-      @main_trains.each.with_index(1) do |(key, value), index|
-        type = "Пассажирский" if value.type == :passenger
-        type = "Грузовой" if value.type == :cargo
-        print "#{index}.\t#{type}\tВагоны: #{value.carriages.count}\tПоезд: #{value.number} \n"
-        puts "На станции:#{value.current_station.title}" unless value.current_station.nil?
+      @main_trains.each.with_index(1) do |train, index|
+        type = "Пассажирский" if train.type == :passenger
+        type = "Грузовой" if train.type == :cargo
+        print "#{index}.\t#{type}\tВагоны: #{train.carriages.count}\tПоезд: #{train.number} \n"
+        puts "На станции:#{train.current_station.title}" unless train.current_station.nil?
       end
     end
   end
@@ -546,7 +544,7 @@ class Main
     else
       input = gets.chomp.to_i
       train = @main_trains[input-1]
-      puts "Выбран #{train.last.number}, кол-во вагонов: #{train.last.carriages.count}"
+      puts "Выбран #{train.number}, кол-во вагонов: #{train.carriages.count}"
       puts "Выберите вагон из списка:"
       unless show_carriages
         puts "Нет вагонов для добавления"
