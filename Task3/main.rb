@@ -63,8 +63,10 @@ class Main
   def choise_train
     puts "Выберите поезд:"
     input = gets.chomp.to_i
+    mass = @ma
     @current_train = @main_trains[input-1]
-    puts "Выбран поезд: #{@current_train.number}"
+    puts ">>>>>>>>>#{@main_trains.inspect}<<<<<<<<<<<<<<<<"
+    puts "Выбран поезд: #{@current_train.last.number}"
   end
 
 
@@ -544,7 +546,7 @@ class Main
     else
       input = gets.chomp.to_i
       train = @main_trains[input-1]
-      puts "Выбран #{train.number}, кол-во вагонов: #{train.carriages.count}"
+      puts "Выбран #{train.last.number}, кол-во вагонов: #{train.last.carriages.count}"
       puts "Выберите вагон из списка:"
       unless show_carriages
         puts "Нет вагонов для добавления"
