@@ -253,6 +253,21 @@ class Main
     end
   end
 
+  def show_trains_at_stations
+    puts "Start"
+    @main_station.each do |st|
+      print "Станция: #{st.title} \tПоезда: "
+      st.each_train do |t|
+        if t
+          print "[#{t.number}]"
+        else
+          print "[Поездов нет]"
+        end
+      end
+      puts "\n"
+    end
+  end
+
   def menu_station
     puts <<~ST
       Станции
@@ -262,6 +277,7 @@ class Main
       4. Удалить станцию из существующего маршрута
       5. Создать новый маршрут
       6. Показать станции
+      7. Просмотр поездов на станциях
   
       0. Главное меню
   ST
@@ -289,6 +305,10 @@ class Main
     puts "\n\nСтанции в маршрутах"
     show_routes
     menu_station
+    when 7
+      clear
+      show_current_info
+      show_trains_at_stations
     end
   end
 
@@ -324,7 +344,7 @@ class Main
     end
     clear
     @current_train = Train.new(number, type)
-    @main_trains[number.to_s] = @current_train
+    @main_trains << @current_train
     rescue ArgumentError => e
     puts "Ошибка"
     puts e.message
@@ -391,7 +411,8 @@ class Main
     end
     @current_train.add_route @current_route
     puts "Маршрут добавлен к поезду #{@current_train.number}"
-    puts "Текущая станция поезда #{@current_station.title}"
+    @current_station = @current_train.current_station
+    puts "Текущая станция поезда #{@current_train.current_station.title}"
     show_current_info
     menu_route
   end
@@ -430,6 +451,20 @@ class Main
     menu_train
   end
 
+  def train_carriage_info
+    puts "Train carriage info"
+    index = 1
+    @current_train.each_carriage do |car|
+      if car.type == :passenger
+        puts "#{index} Всего мест: [#{car.total_count}] Занято: [#{car.busy_places}] Свободно: [#{car.free_places}]"
+        index += 1
+      elsif car.type == :cargo
+        puts "#{index} Объём: [#{car.total_volume}] Свободный объём: [#{car.free_volume}] Занятый объём:[#{car.busy_volume}]"
+        index += 1
+      end
+    end
+  end
+
   def menu_train
     show_trains
     print "\n"
@@ -444,6 +479,7 @@ class Main
       7. Переместить на станцию вперёд
       8. Переместить на станцию назад
       9. Выбрать поезд для добавления вагонов/\станций
+      10. Подробная информация о вагонах
       0. Выход в меню
     TRM
 
@@ -473,6 +509,11 @@ class Main
       choise_train if show_trains
       clear
       show_current_info
+      menu_train
+    when 10
+      clear
+      show_current_info
+      train_carriage_info
       menu_train
     end
   end
