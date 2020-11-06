@@ -38,9 +38,7 @@ class Station
 
   def each_train(&block)
     if block_given?
-      @trains.each do |t|
-        block.call(t)
-      end
+      @trains.each { |t| yield(t) }
     end
   end
 

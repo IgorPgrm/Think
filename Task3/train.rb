@@ -38,9 +38,7 @@ class Train
 
   def each_carriage(&block)
     if block_given?
-      @carriages.each do |с|
-        block.call(с)
-      end
+      @carriages.each {|c| yield(c)}
     end
   end
 
