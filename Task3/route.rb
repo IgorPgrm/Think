@@ -2,29 +2,30 @@ class Route
   include InstanceCounter
   attr_reader :stations, :title
 
-  def initialize (first_station, last_station)
-    @first_station, @last_station = first_station, last_station
-    @title = first_station.title.to_s + " -> " + last_station.title.to_s
-    @stations = [ @first_station, @last_station]
+  def initialize(first_station, last_station)
+    @first_station = first_station
+    @last_station = last_station
+    @title = "#{first_station.title} ->  #{last_station.title}"
+    @stations = [@first_station, @last_station]
     register_instance
   end
 
   def show_route
-    @stations.each.with_index(1) do | station, index |
-      unless @stations.last == station
-        print "#{index}) #{station.title} -> "
-      else
+    @stations.each.with_index(1) do |station, index|
+      if @stations.last == station
         puts "#{index}) #{station.title}"
+      else
+        print "#{index}) #{station.title} -> "
       end
     end
-    return "\n"
+    "\n"
   end
 
-  def add_station station
-    @stations.insert(-2,station) unless present_station_in_route? station
+  def add_station(station)
+    @stations.insert(-2, station) unless present_station_in_route? station
   end
 
-  def del_station station
+  def del_station(station)
     if present_station_in_route?(station) && @stations.first != station && @stations.last != station
       @stations.delete(station)
     else
@@ -32,8 +33,7 @@ class Route
     end
   end
 
-  def present_station_in_route? station
+  def present_station_in_route?(station)
     @stations.include? station
   end
-
 end
