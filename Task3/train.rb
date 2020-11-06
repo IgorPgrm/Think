@@ -6,10 +6,11 @@ class Train
   include InstanceCounter
   attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
   attr_accessor :route
-  @@all_trains = []
-  NUMBERREGEX = /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i
 
-  def initialize number, type
+  @@all_trains = []
+  NUMBERREGEX = /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i.freeze
+
+  def initialize(number, type)
     @number = number
     validate!
     @type = type
@@ -20,7 +21,7 @@ class Train
 
   def validate?
     validate!
-  rescue
+  rescue StandardError
     false
   end
 
@@ -36,10 +37,8 @@ class Train
     @speed -= 1 if @speed.positive?
   end
 
-  def each_carriage(&block)
-    if block_given?
-      @carriages.each {|c| yield(c)}
-    end
+  def each_carriage
+    @carriages.each { |c| yield(c) } if block_given?
   end
 
   def stop
@@ -47,14 +46,14 @@ class Train
   end
 
   def add_carriage(carriage)
-    @carriages.push carriage if @speed.zero? && self.type == carriage.type
+    @carriages.push carriage if @speed.zero? && type == carriage.type
   end
 
   def remove_carriage(carriage)
     @carriages.delete carriage if @speed.zero?
   end
 
-  def add_route route
+  def add_route(route)
     @route = route
     @current_station = route.stations.first
     @current_station.add_train(self)
@@ -66,23 +65,23 @@ class Train
   end
 
   def next_station
-    @route.stations[@route.stations.index(@current_station) + 1] unless is_last_station?
+    @route.stations[@route.stations.index(@current_station) + 1] unless last_station?
   end
 
   def prev_station
-    @route.stations[@route.stations.index(@current_station) - 1] unless is_first_station?
+    @route.stations[@route.stations.index(@current_station) - 1] unless first_station?
   end
 
-  def is_last_station?
+  def last_station?
     @current_station == @route.stations.last
   end
 
-  def is_first_station?
+  def first_station?
     @current_station == @route.stations.first
   end
 
   def move_forvard
-    unless is_last_station?
+    unless last_station?
       @current_station.remove_train(self)
       @current_station = next_station
       @current_station.add_train(self)
@@ -90,33 +89,34 @@ class Train
   end
 
   def move_back
-    unless is_first_station?
+    unless first_station?
       @current_station.remove_train(self)
       @current_station = prev_station
       @current_station.add_train(self)
     end
   end
 
-  def self.find param
+  def self.find(param)
     if @@all_trains.any?
       @@all_trains.each do |train|
-        if train.number == param
-          return train
-        end
+        return train if train.number == param
       end
     end
-    return nil
+    nil
   end
 
   private
-  def add_train_to_all train
+
+  def add_train_to_all(train)
     @@all_trains << train
   end
 
   protected
+
   def validate!
-    raise ArgumentError, "Номер не может быть меньше 5 символов" if number.length < 5
-    raise ArgumentError, "Неправильно задан номер. Формат 123-45 или АБВ-ГД" if NUMBERREGEX !~ number
+    raise ArgumentError, 'Номер не может быть меньше 5 символов' if number.length < 5
+    raise ArgumentError, 'Неправильно задан номер. Формат 123-45 или АБВ-ГД' if NUMBERREGEX !~ number
+
     true
   end
 end

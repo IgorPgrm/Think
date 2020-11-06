@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'module'
 
 class Carriage
@@ -7,25 +9,26 @@ class Carriage
   def initialize(type)
     @type = type
     validate!
-    #register_instance
+    # register_instance
   end
 
   def show_info
-    if self.type == :passenger
-      print "Всего мест: [#{self.total_count}] Занято: [#{self.busy_places}] Свободно: [#{self.free_places}]"
+    if type == :passenger
+      print "Всего мест: [#{total_count}] Занято: [#{busy_places}] Свободно: [#{free_places}]"
     else
-      print "Всего объёма: [#{self.total_volume}] Занято: [#{self.busy_volume}] Свободно: [#{self.free_volume}]"
+      print "Всего объёма: [#{total_volume}] Занято: [#{busy_volume}] Свободно: [#{free_volume}]"
     end
   end
 
   def validate?
     validate!
-  rescue
+  rescue StandardError
     false
   end
 
   protected
+
   def validate!
-    raise ArgumentError, "Тип вагона указан неверно" unless [:passenger, :cargo].include?(type)
+    raise ArgumentError, 'Тип вагона указан неверно' unless %i[passenger cargo].include?(type)
   end
 end
