@@ -1,10 +1,10 @@
-require_relative 'module'
-require_relative 'instance_counter'
+require_relative './module'
+require_relative './instance_counter'
 
 class Train
   include ModuleManufacturer::InstanceMethods
   include InstanceCounter
-  attr_reader :number, :type, :carriages, :current_station, :next_station, :prev_station, :speed
+  attr_reader :number, :type, :carriages, :current_station, :speed
   attr_accessor :route
 
   @@all_trains = []
@@ -37,8 +37,8 @@ class Train
     @speed -= 1 if @speed.positive?
   end
 
-  def each_carriage
-    @carriages.each { |c| yield(c) } if block_given?
+  def each_carriage(&block)
+    @carriages.each(&block) if block_given?
   end
 
   def stop
@@ -81,7 +81,9 @@ class Train
   end
 
   def move_forvard
-    unless last_station?
+    if last_station?
+      puts 'Поезд прибыл на конечную станцию!'
+    else
       @current_station.remove_train(self)
       @current_station = next_station
       @current_station.add_train(self)
@@ -89,7 +91,9 @@ class Train
   end
 
   def move_back
-    unless first_station?
+    if first_station?
+      puts 'Поезд на начальной станции'
+    else
       @current_station.remove_train(self)
       @current_station = prev_station
       @current_station.add_train(self)

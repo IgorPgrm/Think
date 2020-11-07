@@ -37,8 +37,8 @@ class Station
     @trains.each { |train| puts "\t\t #{train.number}\t| #{train.type}\t| #{train.carriages}" if train.type == type }
   end
 
-  def each_train
-    @trains.each { |t| yield(t) } if block_given?
+  def each_train(&block)
+    @trains.each(&block) if block_given?
   end
 
   def self.all

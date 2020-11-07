@@ -17,7 +17,7 @@ module TestModule
           car.add_passenger
         end
         @current_train.add_carriage car
-      else car.type == :cargo
+      else
         car.load rand.rand(10_000)
         @main_trains[1].add_carriage car
       end
@@ -35,15 +35,11 @@ module TestModule
     route = Route.new(@main_station.first, @main_station.last)
     route2 = Route.new(@main_station.last, @main_station.first)
     @main_station.each do |st|
-      if st != route.stations.last && st != route.stations.first
-      route.add_station st unless st == @main_station.last
-      end
+      route.add_station st if st != route.stations.last && st != route.stations.first
     end
 
     @main_station.reverse_each do |st|
-      if st != route.stations.last && st != route.stations.first
-      route2.add_station st
-      end
+      route2.add_station st if st != route.stations.last && st != route.stations.first
     end
     @main_routes << route
     @main_routes << route2

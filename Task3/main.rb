@@ -6,10 +6,10 @@ require_relative 'passenger_train'
 require_relative 'passenger_carriage'
 require_relative 'route'
 require_relative 'station'
-require_relative 'test_data' # Для загрузки тестовых данных
+require_relative 'test_data'
 
 class Main
-  include TestModule # Для загрузки тестовых данных
+  include TestModule
   def initialize
     @main_station = []
     @main_routes = []
@@ -22,7 +22,7 @@ class Main
     @current_station = @na
     @current_carriage = @na
 
-    seed # Для загрузки тестовых данных
+    seed
 
     show_current_info
     main_menu
@@ -77,18 +77,14 @@ class Main
         puts 'Выберите начальную станцию в маршруте из списка и введите её номер или 0 для выхода:'
         input = gets.chomp.to_i
         two_station[0] = @main_station[input - 1]
-        # @main_station.delete_at(input-1) #не удалять
         clear
-      else
-        if two_station[1].nil?
-          puts 'Выберите конечную станцию в маршруте из списка и введите её номер или 0 для выхода:'
-          input = gets.chomp.to_i
-          two_station[1] = @main_station[input - 1]
-          # @main_station.delete_at(input-1) #не удалять
-          clear
-        else
-          break
-        end
+      elsif two_station[1].nil?
+        break unless two_station[1].nil?
+
+        puts 'Выберите конечную станцию в маршруте из списка и введите её номер или 0 для выхода:'
+        input = gets.chomp.to_i
+        two_station[1] = @main_station[input - 1]
+        clear
       end
     end
     two_station
@@ -112,10 +108,10 @@ class Main
   end
 
   def create_new_station
-    puts <<~EOF
+    puts <<~NST
       Создание новой станции
       Введите имя новой станции:
-    EOF
+    NST
     begin
       name = gets.chomp
       station = Station.new(name)
@@ -272,16 +268,15 @@ class Main
 
   def menu_station
     puts <<~ST
-            Станции
-            1. Выбрать станцию
-            2. Создать станцию
-            3. Добавить к существующему маршруту
-            4. Удалить станцию из существующего маршрута
-            5. Создать новый маршрут
-            6. Показать станции
-            7. Просмотр поездов на станциях
-              
-            0. Главное меню
+      Станции
+      1. Выбрать станцию
+      2. Создать станцию
+      3. Добавить к существующему маршруту
+      4. Удалить станцию из существующего маршрута
+      5. Создать новый маршрут
+      6. Показать станции
+      7. Просмотр поездов на станциях
+      0. Главное меню
     ST
     input = gets.chomp.to_i
     clear
@@ -463,7 +458,8 @@ class Main
         puts "#{index} Всего мест: [#{car.total_count}] Занято: [#{car.busy_places}] Свободно: [#{car.free_places}]"
         index += 1
       when :cargo
-        puts "#{index} Объём: [#{car.total_volume}] Свободный объём: [#{car.free_volume}] Занятый объём:[#{car.busy_volume}]"
+        print "#{index} Объём: [#{car.total_volume}] Свободный объём: [#{car.free_volume}] "
+        print "Занятый объём:[#{car.busy_volume}]"
         index += 1
       end
     end
@@ -560,15 +556,12 @@ class Main
   def delete_carriage
     if @current_carriage == @na
       puts "Вагон не выбран, удалять нечего\n"
-      main_menu
     else
       puts "Выбран вагон #{@current_carriage.type}. Удалить? 1- Да 2-Выбрать другой 0-Отмена\n"
       input = gets.chomp.to_i
       clear
       show_current_info
       case input
-      when 0
-        main_menu
       when 2
         @current_carriage = @na
         delete_carriage
@@ -578,8 +571,8 @@ class Main
       puts "Вагон #{@current_carriage.type} - удалён\n\n"
       @current_train = @na
       show_current_info
-      main_menu
     end
+    main_menu
   end
 
   def add_carriage_to_train
@@ -814,4 +807,4 @@ class Main
   end
 end
 
-main = Main.new
+@main = Main.new
