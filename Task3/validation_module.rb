@@ -26,7 +26,8 @@ module Validation
         arg = var[:args][0]
         send type.to_s, attr, attr_var, arg
       end
-    rescue StandardError
+    rescue StandardError => e
+      puts e.message
       false
     end
 

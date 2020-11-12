@@ -1,15 +1,23 @@
 # frozen_string_literal: true
 
 require_relative 'carriage'
+require_relative 'validation_module'
 
 class CargoCarriage < Carriage
+  include Validation
+
   attr_reader :total_volume, :free_volume, :busy_volume
 
+  validate :type, :type_of, Symbol
+  validate :total_volume, :positive
+
   def initialize(volume)
-    super(:cargo)
+    @type = :cargo
+    super(@type)
     @total_volume = volume
     @free_volume = volume
     @busy_volume = 0
+    validate!
   end
 
   def load(volume)

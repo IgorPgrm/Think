@@ -108,20 +108,22 @@ class Main
   end
 
   def create_new_station
+    begin
     puts <<~NST
       Создание новой станции
       Введите имя новой станции:
     NST
-    begin
-      name = gets.chomp
-      station = Station.new(name)
-    rescue ArgumentError => e
-      puts 'Ошибка'
+    name = gets.chomp
+    puts "Введено имя #{name}"
+    station = Station.new(name)
+    raise StandardError, "Ошибка создания станции!" unless station.valid?
+    rescue StandardError => e
       puts e.message
       retry
     end
+    puts "станция: #{station}"
     @main_station << station
-    clear
+    #clear
     puts "Создана станция: #{station.title}"
     @current_station = @main_station.last
     show_current_info

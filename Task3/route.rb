@@ -7,6 +7,7 @@ class Route
   include Validation
 
   attr_reader :stations, :title
+
   validate :title, :length, min: 10, max: 35
   validate :first_station, :type_of, Station
   validate :last_station, :type_of, Station

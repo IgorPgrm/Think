@@ -9,7 +9,7 @@ module TestModule
 
   def create_test_carriages
     10.times { @main_carriages << PassengerCarriage.new(54) }
-    10.times { @main_carriages << CargoCarriage.new(10_000) }
+    10.times { @main_carriages << CargoCarriage.new(10000) }
     rand = Random.new
     @main_carriages.each do |car|
       if car.type == :passenger

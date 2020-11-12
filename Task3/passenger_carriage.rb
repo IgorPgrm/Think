@@ -1,14 +1,21 @@
 require_relative 'carriage'
+require_relative 'validation_module'
 
 class PassengerCarriage < Carriage
-  attr_reader :total_count, :places, :free_places, :busy_places
+  include Validation
+  attr_reader :type, :total_count, :places, :free_places, :busy_places
+
+  validate :type, :type_of, Symbol
+  validate :total_count, :positive
 
   def initialize(total_count)
+    @type = :passenger
+    super(@type)
     @total_count = total_count
     @free_places = total_count
     @busy_places = 0
     @places = []
-    super(:passenger)
+    validate!
     @total_count.times { @places << :free } unless @total_count.zero?
   end
 

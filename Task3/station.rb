@@ -6,6 +6,8 @@ class Station
   include Validation
 
   attr_reader :title, :trains
+
+  validate :title, :type_of, String
   validate :title, :length, min: 3, max: 20
   validate :title, :format, /^[A-Z А-Я]+[а-я \w]+-?\d?[А-Я а-я \w 0-9]*/.freeze
 
@@ -17,8 +19,6 @@ class Station
     @trains = []
     add_station(self)
     register_instance
-  rescue ArgumentError => e
-    puts e.message
   end
 
   def add_train(train)

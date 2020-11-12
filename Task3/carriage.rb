@@ -7,15 +7,10 @@ class Carriage
   include ModuleManufacturer::InstanceMethods
   include Validation
   attr_reader :type
-  validate :type, :type_of, Symbol
-  validate :type, :range, [:cargo, :passenger]
 
   def initialize(type)
     @type = type
-    validate!
     # register_instance
-  rescue ArgumentError => e
-    puts e.message
   end
 
   def show_info

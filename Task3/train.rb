@@ -8,6 +8,7 @@ class Train
   include Validation
   attr_reader :number, :type, :carriages, :current_station, :speed
   attr_accessor :route
+
   validate :number, :format, /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i.freeze
 
   @@all_trains = []
@@ -112,5 +113,4 @@ class Train
   def add_train_to_all(train)
     @@all_trains << train
   end
-
 end
