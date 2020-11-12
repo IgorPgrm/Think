@@ -343,12 +343,12 @@ class Main
       end
       clear
       @current_train = Train.new(number, type)
-      @main_trains << @current_train
-    rescue ArgumentError => e
-      puts 'Ошибка'
+      raise StandardError, "Ошибка создания поезда!" unless @current_train.valid?
+    rescue StandardError => e
       puts e.message
       retry
     end
+    @main_trains << @current_train
     show_current_info
     puts "Создан поезд #{@current_train.number}\n\n"
     menu_train
