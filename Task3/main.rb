@@ -97,10 +97,10 @@ class Main
       create_new_station
     else
       begin
-      two_station = choise_two_station
-      @main_routes << Route.new(two_station.first, two_station.last)
-      @current_route = @main_routes.last
-      raise StandardError, "Ошибка создания маршрута!" unless @current_route.valid?
+        two_station = choise_two_station
+        @main_routes << Route.new(two_station.first, two_station.last)
+        @current_route = @main_routes.last
+        raise StandardError, 'Ошибка создания маршрута!' unless @current_route.valid?
       rescue StandardError => e
         puts e.message
         retry
@@ -115,21 +115,21 @@ class Main
 
   def create_new_station
     begin
-    puts <<~NST
-      Создание новой станции
-      Введите имя новой станции:
-    NST
-    name = gets.chomp
-    puts "Введено имя #{name}"
-    station = Station.new(name)
-    raise StandardError, "Ошибка создания станции!" unless station.valid?
+      puts <<~NST
+        Создание новой станции
+        Введите имя новой станции:
+      NST
+      name = gets.chomp
+      puts "Введено имя #{name}"
+      station = Station.new(name)
+      raise StandardError, 'Ошибка создания станции!' unless station.valid?
     rescue StandardError => e
       puts e.message
       retry
     end
     puts "станция: #{station}"
     @main_station << station
-    #clear
+    # clear
     puts "Создана станция: #{station.title}"
     @current_station = @main_station.last
     show_current_info
@@ -349,7 +349,7 @@ class Main
       end
       clear
       @current_train = Train.new(number, type)
-      raise StandardError, "Ошибка создания поезда!" unless @current_train.valid?
+      raise StandardError, 'Ошибка создания поезда!' unless @current_train.valid?
     rescue StandardError => e
       puts e.message
       retry
