@@ -13,9 +13,6 @@ module Validation
   end
 
   module InstanceMethods
-    # validate :name, :presence
-    # validate :name, :format, /A-Z/
-    # validate :name, :type, String
 
     def valid?
       validate! ? true : false
@@ -33,6 +30,10 @@ module Validation
       end
     end
 
+    def range(attr, value, range)
+      raise ArgumentError, "Не находится в диапазоне" unless range.include?(value)
+    end
+
     def presence(attr, value, _arg)
       raise ArgumentError, "#{attr} is empty or nil!" if value.nil? || value.empty?
     end
@@ -41,7 +42,7 @@ module Validation
       raise RegexpError, "Format of #{attr} should be #{regexp}" if value !~ regexp
     end
 
-    def type(attr, value, arg)
+    def type_of(attr, value, arg)
       raise ArgumentError, "#{attr} type must be #{arg}!" if value.class != arg
     end
 
