@@ -31,7 +31,7 @@ module Validation
     end
 
     def range(attr, value, range)
-      raise ArgumentError, "Не находится в диапазоне" unless range.include?(value)
+      raise ArgumentError, "#{attr} out of range" unless range.include?(value)
     end
 
     def presence(attr, value, _arg)
