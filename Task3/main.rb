@@ -96,9 +96,15 @@ class Main
       puts 'Для составления маршрута, необходимо 2 станции'
       create_new_station
     else
+      begin
       two_station = choise_two_station
       @main_routes << Route.new(two_station.first, two_station.last)
       @current_route = @main_routes.last
+      raise StandardError, "Ошибка создания маршрута!" unless @current_route.valid?
+      rescue StandardError => e
+        puts e.message
+        retry
+      end
       clear
       puts 'Был создан маршрут:'
       print "#{@main_routes.last.stations.first.title} -> "
