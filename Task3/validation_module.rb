@@ -8,12 +8,10 @@ module Validation
     def validate(attr, type, *args)
       @validate ||= []
       @validate << { attr: attr, type: type, args: args }
-      puts "Class-validate: #{@validate}"
     end
   end
 
   module InstanceMethods
-
     def valid?
       validate! ? true : false
     end
@@ -62,6 +60,10 @@ module Validation
       end
 
       raise ArgumentError, "#{attr} length should be #{min_t} #{max_t} chars" if value_max || value_min
+    end
+
+    def positive(attr, value, _)
+      raise ArgumentError, "#{attr} must be positive!" if value.positive?
     end
   end
 end
