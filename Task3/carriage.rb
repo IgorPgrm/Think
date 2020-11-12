@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 require_relative 'module'
+require_relative 'validation_module'
 
 class Carriage
   include ModuleManufacturer::InstanceMethods
+  include Validation
   attr_reader :type
+  validate :type, :type_of, Symbol
+  validate :type, :range, [:cargo, :passenger]
 
   def initialize(type)
     @type = type
     validate!
     # register_instance
+  rescue ArgumentError => e
+    puts e.message
   end
 
   def show_info
@@ -18,17 +24,5 @@ class Carriage
     else
       print "Всего объёма: [#{total_volume}] Занято: [#{busy_volume}] Свободно: [#{free_volume}]"
     end
-  end
-
-  def validate?
-    validate!
-  rescue StandardError
-    false
-  end
-
-  protected
-
-  def validate!
-    raise ArgumentError, 'Тип вагона указан неверно' unless %i[passenger cargo].include?(type)
   end
 end

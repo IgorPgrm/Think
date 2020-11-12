@@ -1,14 +1,16 @@
 require_relative './module'
 require_relative './instance_counter'
+require_relative 'validation_module'
 
 class Train
   include ModuleManufacturer::InstanceMethods
   include InstanceCounter
+  include Validation
   attr_reader :number, :type, :carriages, :current_station, :speed
   attr_accessor :route
+  validate :number, :format, /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i.freeze
 
   @@all_trains = []
-  NUMBERREGEX = /^[a-z а-я\d]{3}-?[а-я a-z\d]{2}$/i.freeze
 
   def initialize(number, type)
     @number = number
@@ -17,12 +19,8 @@ class Train
     @speed = 0
     @carriages = []
     add_train_to_all self
-  end
-
-  def validate?
-    validate!
-  rescue StandardError
-    false
+  rescue ArgumentError => e
+    puts e.message
   end
 
   def show_info
@@ -115,12 +113,4 @@ class Train
     @@all_trains << train
   end
 
-  protected
-
-  def validate!
-    raise ArgumentError, 'Номер не может быть меньше 5 символов' if number.length < 5
-    raise ArgumentError, 'Неправильно задан номер. Формат 123-45 или АБВ-ГД' if NUMBERREGEX !~ number
-
-    true
-  end
 end

@@ -1,6 +1,15 @@
+require_relative 'instance_counter'
+require_relative 'validation_module'
+require_relative 'station'
+
 class Route
   include InstanceCounter
+  include Validation
+
   attr_reader :stations, :title
+  validate :title, :length, min: 10, max: 35
+  validate :first_station, :type_of, Station
+  validate :last_station, :type_of, Station
 
   def initialize(first_station, last_station)
     @first_station = first_station
@@ -8,6 +17,9 @@ class Route
     @title = "#{first_station.title} ->  #{last_station.title}"
     @stations = [@first_station, @last_station]
     register_instance
+    validate!
+  rescue ArgumentError => e
+    puts e.message
   end
 
   def show_route

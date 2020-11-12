@@ -1,11 +1,15 @@
 require_relative 'instance_counter'
+require_relative 'validation_module'
 
 class Station
   include InstanceCounter
+  include Validation
+
   attr_reader :title, :trains
+  validate :title, :length, min: 3, max: 20
+  validate :title, :format, /^[A-Z А-Я]+[а-я \w]+-?\d?[А-Я а-я \w 0-9]*/.freeze
 
   @@all_station = []
-  STATIONREGEXP = /^[A-Z А-Я]+[а-я \w]+-?\d?[А-Я а-я \w 0-9]*/.freeze
 
   def initialize(title)
     @title = title
@@ -13,12 +17,8 @@ class Station
     @trains = []
     add_station(self)
     register_instance
-  end
-
-  def validate?
-    validate!
-  rescue StandardError
-    false
+  rescue ArgumentError => e
+    puts e.message
   end
 
   def add_train(train)
@@ -46,11 +46,6 @@ class Station
   end
 
   protected
-
-  def validate!
-    raise ArgumentError, "Неверный формат. Формат: 'Москва', 'Москва-2', 'Йошкар-ола'" if title !~ STATIONREGEXP
-    raise ArgumentError, 'Название должно быть минимум 3 символа' if title.length < 3
-  end
 
   def add_station(station)
     @@all_station << station
