@@ -26,6 +26,8 @@ module Validation
         arg = var[:args][0]
         send type.to_s, attr, attr_var, arg
       end
+    rescue StandardError
+      false
     end
 
     def range(attr, value, range)
@@ -63,7 +65,8 @@ module Validation
     end
 
     def positive(attr, value, _)
-      raise ArgumentError, "#{attr} must be positive!" if value.positive?
+      raise ArgumentError, "#{attr} should be Integer positive" if value.nil?
+      raise ArgumentError, "#{attr} must be positive!" unless value.positive?
     end
   end
 end
